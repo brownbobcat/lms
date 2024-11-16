@@ -64,7 +64,6 @@ export class AuthService {
   async register(registerDto: RegisterDto) {
     const { email, password, fullName, role } = registerDto;
 
-    // Check if user exists
     const userExists = await this.usersRepository.findOne({
       where: { email },
     });
@@ -74,10 +73,8 @@ export class AuthService {
     }
 
     try {
-      // Hash password
       const hashedPassword = await bcrypt.hash(password, 10);
 
-      // Create user
       const user = this.usersRepository.create({
         email,
         password: hashedPassword,
@@ -85,10 +82,8 @@ export class AuthService {
         role,
       });
 
-      // Save user
       const savedUser = await this.usersRepository.save(user);
 
-      // Generate JWT
       const payload = {
         email: savedUser.email,
         sub: savedUser.id,
