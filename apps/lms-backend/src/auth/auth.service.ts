@@ -1,6 +1,11 @@
-import { ConflictException, Injectable, InternalServerErrorException, UnauthorizedException } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  InternalServerErrorException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { User } from '../users/entities/users.entity';
+import { User } from '../users/users.entity';
 import { Repository } from 'typeorm';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
@@ -84,10 +89,10 @@ export class AuthService {
       const savedUser = await this.usersRepository.save(user);
 
       // Generate JWT
-      const payload = { 
-        email: savedUser.email, 
-        sub: savedUser.id, 
-        role: savedUser.role 
+      const payload = {
+        email: savedUser.email,
+        sub: savedUser.id,
+        role: savedUser.role,
       };
 
       return {
