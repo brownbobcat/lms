@@ -52,7 +52,7 @@
         } }
 
         <div class="login__action">
-            <button [disabled]="loading" class="submit__btn" mat-flat-button type="submit">
+            <button [disabled]="loading || loginForm.invalid" class="submit__btn" mat-flat-button type="submit">
               @if (loading) {
                 <span class="loading">Loading...</span>
               } @else {
