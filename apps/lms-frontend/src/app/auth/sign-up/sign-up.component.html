@@ -1,40 +1,41 @@
 <div class="container">
-    <div class="illustration">
-      <img src="signup.svg" alt="signup" />
-    </div>
-  
-    <!-- Sign Up Form -->
-    <div class="form">
-      <div class="form-content">
-        <div class="header">
-          <h1>Create Account</h1>
-          <p>Please fill in your details to create an account</p>
-        </div>
-  
-        <form (ngSubmit)="submit()" [formGroup]="signupForm">
-          <mat-form-field appearance="outline">
-            <mat-label>Full Name</mat-label>
-            <input formControlName="fullName" id="fullName" matInput type="text" />
-          </mat-form-field>
-          @if (signupForm.get('fullName')?.invalid && signupForm.get('fullName')?.touched) {
-            @if (signupForm.get('fullName')?.errors?.['required']) {
-              <mat-error class="signup__error">Full name is required</mat-error>
-            }
+  <div class="illustration">
+    <img src="education.svg" alt="education" />
+  </div>
+
+  <!-- Sign Up Form -->
+  <div class="form">
+    <div class="form-content">
+      <div class="header">
+        <h1>Create Account</h1>
+        <p>Please fill in your details to create an account</p>
+      </div>
+
+      <form (ngSubmit)="submit()" [formGroup]="signupForm">
+        <mat-form-field appearance="outline">
+          <mat-label>Full Name</mat-label>
+          <input formControlName="fullName" id="fullName" matInput type="text" />
+        </mat-form-field>
+        @if (signupForm.get('fullName')?.invalid && signupForm.get('fullName')?.touched) {
+          @if (signupForm.get('fullName')?.errors?.['required']) {
+            <mat-error class="signup__error">Full name is required</mat-error>
           }
-  
-          <mat-form-field appearance="outline">
-            <mat-label>Email</mat-label>
-            <input formControlName="email" id="email" matInput type="email" />
-          </mat-form-field>
-          @if (signupForm.get('email')?.invalid && signupForm.get('email')?.touched) {
-            @if (signupForm.get('email')?.errors?.['required']) {
-              <mat-error class="signup__error">Email is required</mat-error>
-            }
-            @if (signupForm.get('email')?.errors?.['email']) {
-              <mat-error class="signup__error">Please enter a valid email address</mat-error>
-            }
+        }
+
+        <mat-form-field appearance="outline">
+          <mat-label>Email</mat-label>
+          <input formControlName="email" id="email" matInput type="email" />
+        </mat-form-field>
+        @if (signupForm.get('email')?.invalid && signupForm.get('email')?.touched) {
+          @if (signupForm.get('email')?.errors?.['required']) {
+            <mat-error class="signup__error">Email is required</mat-error>
           }
-  
+          @if (signupForm.get('email')?.errors?.['email']) {
+            <mat-error class="signup__error">Please enter a valid email address</mat-error>
+          }
+        }
+
+        <div formGroupName="passwords" class="passwords">
           <mat-form-field appearance="outline">
             <mat-label>Password</mat-label>
             <input
@@ -47,40 +48,62 @@
               {{ togglePassword ? 'visibility_off' : 'visibility' }}
             </mat-icon>
           </mat-form-field>
-          @if (signupForm.get('password')?.invalid && signupForm.get('password')?.touched) {
-            @if (signupForm.get('password')?.errors?.['required']) {
+          @if (passwordsGroup?.get('password')?.invalid && passwordsGroup?.get('password')?.touched) {
+            @if (passwordsGroup?.get('password')?.errors?.['required']) {
               <mat-error class="signup__error">Password is required</mat-error>
             }
-            @if (signupForm.get('password')?.errors?.['minlength']) {
+            @if (passwordsGroup?.get('password')?.errors?.['minlength']) {
               <mat-error class="signup__error">Password should be at least 8 characters</mat-error>
             }
-            @if (signupForm.get('password')?.errors?.['weakPassword']) {
+            @if (passwordsGroup?.get('password')?.errors?.['weakPassword']) {
               <mat-error class="signup__error">
                 Password must contain at least one uppercase letter, one lowercase letter, 
                 one number, and one special character
               </mat-error>
             }
           }
-  
-          <div class="signup__action">
-            <button
-              [disabled]="loading || signupForm.invalid"
-              class="submit__btn"
-              mat-flat-button
-              type="submit">
-              @if (loading) {
-                <span class="loading">Loading...</span>
-              } @else {
-                <span>Create Account</span>
-              }
-            </button>
-            
-            <div class="action-links">
-              <a routerLink="/login">Already have an account?</a>
-              <a routerLink="/terms">Terms & Privacy</a>
-            </div>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Confirm Password</mat-label>
+            <input
+              [type]="toggleConfirmPassword ? 'password' : 'text'"
+              formControlName="confirmPassword"
+              id="confirmPassword"
+              matInput
+            />
+            <mat-icon (click)="toggleConfirmPassword = !toggleConfirmPassword" matSuffix>
+              {{ toggleConfirmPassword ? 'visibility_off' : 'visibility' }}
+            </mat-icon>
+          </mat-form-field>
+          @if (passwordsGroup?.get('confirmPassword')?.invalid && passwordsGroup?.get('confirmPassword')?.touched) {
+            @if (passwordsGroup?.get('confirmPassword')?.errors?.['required']) {
+              <mat-error class="signup__error">Please confirm your password</mat-error>
+            }
+          }
+          @if (passwordsGroup?.errors?.['passwordMismatch'] && passwordsGroup?.get('confirmPassword')?.touched) {
+            <mat-error class="signup__error">Passwords do not match</mat-error>
+          }
+        </div>
+
+        <div class="signup__action">
+          <button
+            [disabled]="loading || signupForm.invalid"
+            class="submit__btn"
+            mat-flat-button
+            type="submit">
+            @if (loading) {
+              <span class="loading">Loading...</span>
+            } @else {
+              <span>Create Account</span>
+            }
+          </button>
+          
+          <div class="action-links">
+            <a routerLink="/login">Already have an account?</a>
+            <a routerLink="/terms">Terms & Privacy</a>
           </div>
-        </form>
-      </div>
+        </div>
+      </form>
     </div>
   </div>
+</div>
