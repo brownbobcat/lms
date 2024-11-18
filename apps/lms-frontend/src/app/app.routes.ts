@@ -2,6 +2,7 @@ import { Route } from '@angular/router';
 import { LoginComponent } from './auth/login/login.component';
 import { SignupComponent } from './auth/sign-up/sign-up.component';
 import { ForgotPasswordComponent } from './auth/forgot-password/forgot-password.component';
+import { dashboardRoutes } from './dashboard/dashboard.routes';
 
 export const appRoutes: Route[] = [
   {
@@ -24,4 +25,5 @@ export const appRoutes: Route[] = [
     component: ForgotPasswordComponent,
     // canActivate: [canActivateAuthPages],
   },
+  ...dashboardRoutes
 ];

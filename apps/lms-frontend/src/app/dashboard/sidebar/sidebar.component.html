@@ -1,0 +1,27 @@
+<mat-nav-list>
+  <a mat-list-item routerLink="/dashboard" routerLinkActive="active">
+    <mat-icon matListItemIcon>dashboard</mat-icon>
+    <span matListItemTitle *ngIf="isExpanded">Dashboard</span>
+  </a>
+  <a mat-list-item routerLink="/courses" routerLinkActive="active">
+    <mat-icon matListItemIcon>school</mat-icon>
+    <span matListItemTitle *ngIf="isExpanded">My Courses</span>
+  </a>
+  <a mat-list-item routerLink="/assignments" routerLinkActive="active">
+    <mat-icon matListItemIcon>assignment</mat-icon>
+    <span matListItemTitle *ngIf="isExpanded">Assignments</span>
+  </a>
+  <a mat-list-item routerLink="/progress" routerLinkActive="active">
+    <mat-icon matListItemIcon>trending_up</mat-icon>
+    <span matListItemTitle *ngIf="isExpanded">Progress</span>
+  </a>
+  <a mat-list-item routerLink="/calendar" routerLinkActive="active">
+    <mat-icon matListItemIcon>calendar_today</mat-icon>
+    <span matListItemTitle *ngIf="isExpanded">Calendar</span>
+  </a>
+  <mat-divider></mat-divider>
+  <a mat-list-item routerLink="/settings" routerLinkActive="active" class="settings-item">
+    <mat-icon matListItemIcon>settings</mat-icon>
+    <span matListItemTitle *ngIf="isExpanded">Settings</span>
+  </a>
+</mat-nav-list>
