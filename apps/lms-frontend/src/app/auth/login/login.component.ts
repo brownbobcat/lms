@@ -1,6 +1,6 @@
-import { Component, OnDestroy } from '@angular/core';
+import { Component, inject, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -38,9 +38,12 @@ export class LoginComponent implements OnDestroy {
   private unsubscribe = new Subject<void>();
   public togglePassword = true;
   public loading = false;
+  private router = inject(Router);
 
   // eslint-disable-next-line @typescript-eslint/no-empty-function
-  public submit() {}
+  public submit() {
+    this.router.navigate(['/dashboard/overview']);
+  }
 
   ngOnDestroy(): void {
     this.unsubscribe.next();
