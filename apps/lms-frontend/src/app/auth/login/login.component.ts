@@ -40,9 +40,8 @@ export class LoginComponent implements OnDestroy {
   public loading = false;
   private router = inject(Router);
 
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
   public submit() {
-    this.router.navigate(['/dashboard/overview']);
+    this.router.navigate(['/dashboard']);
   }
 
   ngOnDestroy(): void {
