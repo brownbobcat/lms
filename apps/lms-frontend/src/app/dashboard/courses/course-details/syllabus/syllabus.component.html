@@ -1,1 +1,51 @@
-<p>syllabus works!</p>
+<div class="syllabus-container">
+  <!-- Documents List -->
+  <div class="documents-list">
+    <h2>Course Documents</h2>
+    @for (doc of documents; track doc.id) {
+    <mat-card
+      class="document-card"
+      (click)="selectDocument(doc)"
+      [class.selected]="selectedDocument?.id === doc.id"
+    >
+      <mat-card-content>
+        <div class="document-info">
+          <mat-icon>picture_as_pdf</mat-icon>
+          <div class="document-details">
+            <h3>{{ doc.title }}</h3>
+            <p>{{ doc.description }}</p>
+            <small>Uploaded: {{ doc.dateUploaded | date }}</small>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+    }
+  </div>
+
+  <!-- PDF Preview -->
+  <div class="preview-section">
+    @if (!selectedDocument) {
+    <div class="no-selection">
+      <mat-icon>description</mat-icon>
+      <p>Select a document to view</p>
+    </div>
+    } @else {
+    <div class="pdf-viewer-container">
+      <div class="pdf-header">
+        <h3>{{ selectedDocument.title }}</h3>
+      </div>
+      @if (pdfSrc) {
+      <pdf-viewer
+        [src]="pdfSrc!"
+        [render-text]="true"
+        [original-size]="false"
+        [show-all]="true"
+        class="pdf-viewer"
+        (error)="onError($event)"
+        (after-load-complete)="onDocumentLoad($event)"
+      ></pdf-viewer>
+      }
+    </div>
+    }
+  </div>
+</div>
