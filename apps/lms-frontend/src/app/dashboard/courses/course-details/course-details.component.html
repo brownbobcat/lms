@@ -1,0 +1,87 @@
+<div class="container">
+  <mat-tab-group
+    mat-stretch-tabs="false"
+    mat-align-tabs="start"
+    class="course-tabs"
+  >
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <mat-icon class="tab-icon">announcement</mat-icon>
+        Announcements
+      </ng-template>
+      <div class="tab-content">
+        <app-announcements></app-announcements>
+      </div>
+    </mat-tab>
+
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <mat-icon class="tab-icon">description</mat-icon>
+        Syllabus
+      </ng-template>
+      <div class="tab-content">
+        <app-syllabus></app-syllabus>
+      </div>
+    </mat-tab>
+
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <mat-icon class="tab-icon">library_books</mat-icon>
+        Course Material
+      </ng-template>
+      <div class="tab-content">
+        <app-course-material></app-course-material>
+      </div>
+    </mat-tab>
+
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <mat-icon class="tab-icon">forum</mat-icon>
+        Discussions
+      </ng-template>
+      <div class="tab-content">
+        <app-discussions></app-discussions>
+      </div>
+    </mat-tab>
+
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <mat-icon class="tab-icon">assignment</mat-icon>
+        Assignments
+      </ng-template>
+      <div class="tab-content">
+        <app-assignment></app-assignment>
+      </div>
+    </mat-tab>
+
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <mat-icon class="tab-icon">engineering</mat-icon>
+        Project
+      </ng-template>
+      <div class="tab-content">
+        <app-project></app-project>
+      </div>
+    </mat-tab>
+
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <mat-icon class="tab-icon">grade</mat-icon>
+        My Grades
+      </ng-template>
+      <div class="tab-content">
+        <app-grades></app-grades>
+      </div>
+    </mat-tab>
+
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <mat-icon class="tab-icon">rate_review</mat-icon>
+        Course Evaluation
+      </ng-template>
+      <div class="tab-content">
+        <app-course-evaluation></app-course-evaluation>
+      </div>
+    </mat-tab>
+  </mat-tab-group>
+</div>

@@ -3,7 +3,6 @@
     <img src="education.svg" alt="education" />
   </div>
 
-  <!-- Login Form -->
   <div class="form">
     <div class="form-content">
       <div class="header">
@@ -14,57 +13,101 @@
       <form (ngSubmit)="submit()" [formGroup]="loginForm">
         <mat-form-field appearance="outline">
           <mat-label>Email</mat-label>
-          <input formControlName="email" id="email" matInput type="email" />
+          <input
+            matInput
+            type="email"
+            formControlName="email"
+            placeholder="Enter your email"
+          />
         </mat-form-field>
-        @if ( loginForm.get('email')?.invalid && loginForm.get('email')?.touched
-        ) { @if (loginForm.get('email')?.errors?.['required']) {
-        <mat-error class="login__error">Email is required</mat-error>
-        } @if (loginForm.get('email')?.errors?.['email']) {
-        <mat-error class="login__error"
-          >Please enter a valid email address
-        </mat-error>
-        } }
+        @if (emailControl?.invalid && emailControl?.touched) {
+          @if (emailControl?.errors?.['required']) {
+            <mat-error class="error">Email is required</mat-error>
+          }
+          @if (emailControl?.errors?.['email']) {
+            <mat-error class="error">Please enter a valid email address</mat-error>
+          }
+        }
 
         <mat-form-field appearance="outline">
           <mat-label>Password</mat-label>
           <input
-            [type]="togglePassword ? 'password' : 'text'"
-            formControlName="password"
-            id="password"
             matInput
+            [type]="showPassword ? 'text' : 'password'"
+            formControlName="password"
+            placeholder="Enter your password"
           />
-          <mat-icon (click)="togglePassword = !togglePassword" matSuffix
-            >{{ togglePassword ? 'visibility_off' : 'visibility' }}
-          </mat-icon>
+          <button
+            type="button"
+            mat-icon-button
+            matSuffix
+            (click)="togglePasswordVisibility()"
+          >
+            <mat-icon>{{ showPassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+          </button>
         </mat-form-field>
-        @if ( loginForm.get('password')?.invalid &&
-        loginForm.get('password')?.touched ) { @if
-        (loginForm.get('password')?.errors?.['required']) {
-        <mat-error class="login__error">Password is required</mat-error>
-        } @if (loginForm.get('password')?.errors?.['minLength']) {
-        <mat-error class="login__error"
-          >Password should be at least 8 characters
-        </mat-error>
-        } @if (loginForm.get('password')?.errors?.['weakPassword']) {
-        <mat-error class="login__error"
-          >Please enter a valid password
-        </mat-error>
-        } }
+        @if (passwordControl?.invalid && passwordControl?.touched) {
+          @if (passwordControl?.errors?.['required']) {
+            <mat-error class="error">Password is required</mat-error>
+          }
+          @if (passwordControl?.errors?.['passwordStrength']) {
+            <div class="password-criteria">
+              <p>Password must contain:</p>
+              <ul>
+                @if (passwordControl?.errors?.['passwordStrength']?.minLength) {
+                  <li class="invalid">At least 8 characters</li>
+                } @else {
+                  <li class="valid">At least 8 characters</li>
+                }
+                
+                @if (passwordControl?.errors?.['passwordStrength']?.upperCase) {
+                  <li class="invalid">At least one uppercase letter</li>
+                } @else {
+                  <li class="valid">At least one uppercase letter</li>
+                }
+                
+                @if (passwordControl?.errors?.['passwordStrength']?.lowerCase) {
+                  <li class="invalid">At least one lowercase letter</li>
+                } @else {
+                  <li class="valid">At least one lowercase letter</li>
+                }
+                
+                @if (passwordControl?.errors?.['passwordStrength']?.numbers) {
+                  <li class="invalid">At least one number</li>
+                } @else {
+                  <li class="valid">At least one number</li>
+                }
+                
+                @if (passwordControl?.errors?.['passwordStrength']?.specialCharacters) {
+                  <li class="invalid">At least one special character</li>
+                } @else {
+                  <li class="valid">At least one special character</li>
+                }
+              </ul>
+            </div>
+          }
+        }
 
         <div class="login__action">
-            <button [disabled]="loading || loginForm.invalid" class="submit__btn" mat-flat-button type="submit">
-              @if (loading) {
-                <span class="loading">Loading...</span>
-              } @else {
-                <span>Login</span>
-              }
-            </button>
-            
-            <div class="action-links">
-              <a routerLink="/sign-up">Don't have an account?</a>
-              <a routerLink="/forgot-password">Forgot password?</a>
-            </div>
+          <button 
+            type="submit"
+            mat-flat-button 
+            class="submit__btn"
+            [disabled]="loginForm.invalid || isLoading"
+          >
+            @if (isLoading) {
+              <mat-spinner diameter="20"></mat-spinner>
+              <span class="loading-text">Logging in...</span>
+            } @else {
+              <span>Login</span>
+            }
+          </button>
+          
+          <div class="action-links">
+            <a routerLink="/sign-up">Don't have an account?</a>
+            <a routerLink="/forgot-password">Forgot password?</a>
           </div>
+        </div>
       </form>
     </div>
   </div>

@@ -1,0 +1,40 @@
+.course-header {
+    padding: 24px;
+    background: white;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    margin-bottom: 16px;
+  }
+
+  .course-info h2 {
+    margin: 0;
+    color: #2c3e50;
+  }
+
+  .course-info p {
+    margin: 8px 0 0;
+    color: #666;
+  }
+
+  .course-tabs {
+    background: white;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+
+  .tab-icon {
+    margin-right: 8px;
+  }
+
+  .tab-content {
+    padding: 24px;
+  }
+
+  ::ng-deep .mat-tab-label {
+    height: 48px !important;
+    padding: 0 24px !important;
+    opacity: 1 !important;
+  }
+
+  ::ng-deep .mat-tab-label-active {
+    background-color: rgba(0, 0, 0, 0.05);
+  }

@@ -7,8 +7,10 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatSidenavModule } from '@angular/material/sidenav';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { MobileMenuComponent } from './mobile-menu/mobile-menu.component';
+import {MatDividerModule} from '@angular/material/divider';
+import { AuthService } from '../auth/auth.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -23,12 +25,19 @@ import { MobileMenuComponent } from './mobile-menu/mobile-menu.component';
     MatCardModule,
     MatSidenavModule,
     RouterModule,
-    MobileMenuComponent
+    MobileMenuComponent,
+    MatMenuModule,
+    MatIconModule,
+    MatButtonModule,
+    MatDividerModule
   ],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss',
 })
 export class DashboardComponent {
+  private router = inject(Router);
+  private readonly authService = inject(AuthService);
+
   @ViewChild(MobileMenuComponent) mobileMenu!: MobileMenuComponent;
   isSidebarOpen = true;
   isMobile = window.innerWidth <= 768;
@@ -44,5 +53,13 @@ export class DashboardComponent {
     } else {
       this.isSidebarOpen = !this.isSidebarOpen;
     }
+  }
+
+  logout() {
+    this.authService.logout()
+  }
+
+  viewProfile() {
+    this.router.navigate(['/profile']);
   }
 }
