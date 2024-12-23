@@ -47,3 +47,11 @@ export interface Announcement {
     avatar?: string;
   };
 }
+
+export interface SyllabusDocument {
+  id: string;
+  title: string;
+  description: string;
+  dateUploaded: Date;
+  fileUrl: string;
+}
