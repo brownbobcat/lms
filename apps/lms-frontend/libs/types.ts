@@ -36,3 +36,14 @@ export interface Course {
   instructor: string;
   isFavorite: boolean;
 }
+
+export interface Announcement {
+  title: string;
+  datePosted: Date;
+  content: string;
+  postedBy: {
+    name: string;
+    role: string;
+    avatar?: string;
+  };
+}
