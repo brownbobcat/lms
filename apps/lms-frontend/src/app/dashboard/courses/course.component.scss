@@ -1,0 +1,95 @@
+.search-container {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    flex-wrap: wrap;
+    padding: 16px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+
+  .search-field {
+    flex: 1 1 300px;
+  }
+
+  .semester-field {
+    flex: 0 1 200px;
+  }
+
+  @media (max-width: 600px) {
+    .search-field, .semester-field {
+      flex: 1 1 100%;
+    }
+  }
+
+  .view-toggle {
+    margin: 16px 0;
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  .course-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 16px;
+    padding: 16px;
+  }
+
+  .course-card {
+    position: relative;
+  }
+
+  .favorite-button {
+    position: absolute;
+    right: 8px;
+    top: 8px;
+  }
+
+  .list-item-content {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .course-info {
+    flex: 1;
+  }
+
+  .favorited {
+    color: green;
+  }
+
+  .course-list mat-list-item {
+    margin-bottom: 25px;
+    height: auto !important;
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    padding: 16px !important;
+    background-color: white;
+  }
+  
+  .course-list mat-list-item:last-child {
+    margin-bottom: 0;
+  }
+  
+  .list-item-content {
+    padding: 2px 0;
+  }
+
+  .instructor-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  @media (max-width: 600px) {
+    .course-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .course-card, mat-list-item {
+    cursor: pointer;
+  }

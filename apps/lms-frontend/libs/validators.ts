@@ -1,10 +1,42 @@
 import { AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
+import { PasswordStrengthErrors } from './types'
 
 export function passwordValidator(): ValidatorFn {
   return (control: AbstractControl): ValidationErrors | null => {
-    const passwordRegex: RegExp = /^(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
-    const validPassword = passwordRegex.test(control.value);
-    return validPassword ? null : { passwordMismatch: true };
+    const value = control.value;
+
+    if (!value) {
+      return null;
+    }
+
+    const errors: PasswordStrengthErrors = {};
+
+    // Check minimum length
+    if (value.length < 8) {
+      errors.minLength = true;
+    }
+
+    // Check for uppercase letters
+    if (!/[A-Z]/.test(value)) {
+      errors.upperCase = true;
+    }
+
+    // Check for lowercase letters
+    if (!/[a-z]/.test(value)) {
+      errors.lowerCase = true;
+    }
+
+    // Check for numbers
+    if (!/\d/.test(value)) {
+      errors.numbers = true;
+    }
+
+    // Check for special characters
+    if (!/[\W_]/.test(value)) {
+      errors.specialCharacters = true;
+    }
+
+    return Object.keys(errors).length > 0 ? { passwordStrength: errors } : null;
   };
 }
 
@@ -17,7 +49,7 @@ export function passwordMatchValidator(control: AbstractControl) {
 
 export function fullNameValidator(): ValidatorFn {
   return (control: AbstractControl): ValidationErrors | null => {
-    const regex: RegExp = /^[a-zA-Z'-]+\s[a-zA-Z'-]+$/;
+    const regex = /^[a-zA-Z'-]+\s[a-zA-Z'-]+$/;
     const validFullName = regex.test(control.value);
     return validFullName ? null : { invalidFullName: true };
   };
