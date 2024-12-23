@@ -55,3 +55,15 @@ export interface SyllabusDocument {
   dateUploaded: Date;
   fileUrl: string;
 }
+
+export interface CourseMaterial {
+  id: string;
+  title: string;
+  description?: string;
+  fileUrl: string;
+  fileName: string;
+  fileType: string;
+  uploadedBy: string;
+  dateUploaded: Date;
+  folder: string;
+}
