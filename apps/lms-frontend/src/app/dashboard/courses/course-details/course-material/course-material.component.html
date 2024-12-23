@@ -1,1 +1,95 @@
-<p>course-material works!</p>
+<!-- course-materials.component.html -->
+<div class="materials-container">
+    <!-- Upload Form -->
+    <mat-card class="upload-section">
+      <mat-card-header>
+        <mat-card-title>Upload Course Material</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <form [formGroup]="uploadForm!" (ngSubmit)="onSubmit()">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Title</mat-label>
+            <input matInput formControlName="title" placeholder="Enter material title">
+          </mat-form-field>
+  
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Description</mat-label>
+            <textarea matInput formControlName="description" rows="3"></textarea>
+          </mat-form-field>
+  
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Folder</mat-label>
+            <mat-select formControlName="folder">
+              @for (folder of folders; track folder) {
+                <mat-option [value]="folder">{{ folder }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+  
+          <div class="file-upload">
+            <input
+              type="file"
+              #fileInput
+              (change)="onFileSelected($event)"
+              style="display: none"
+            >
+            <button
+              type="button"
+              mat-raised-button
+              color="primary"
+              (click)="fileInput.click()"
+            >
+              <mat-icon>attach_file</mat-icon>
+              Select File
+            </button>
+            @if (selectedFile) {
+              <span class="selected-file">{{ selectedFile.name }}</span>
+            }
+          </div>
+  
+          <button
+            mat-raised-button
+            color="primary"
+            type="submit"
+            [disabled]="!uploadForm?.valid"
+          >
+            Upload Material
+          </button>
+        </form>
+      </mat-card-content>
+    </mat-card>
+  
+    <!-- Materials List -->
+    <div class="materials-list">
+      @for (folder of folders; track folder) {
+        @if (materials | filterByFolder:folder; as folderMaterials) {
+          <mat-card class="folder-section">
+            <mat-card-header>
+              <mat-card-title>{{ folder }}</mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+              @for (material of folderMaterials; track material.id) {
+                <div class="material-item">
+                  <div class="material-info">
+                    <mat-icon>{{ getMaterialIcon(material.fileType) }}</mat-icon>
+                    <div class="material-details">
+                      <h3>{{ material.title }}</h3>
+                      <p>{{ material.description }}</p>
+                      <small>Uploaded: {{ material.dateUploaded | date }}</small>
+                    </div>
+                  </div>
+                  <button
+                    mat-icon-button
+                    color="primary"
+                    (click)="downloadMaterial(material)"
+                  >
+                    <mat-icon>download</mat-icon>
+                  </button>
+                </div>
+              }
+            </mat-card-content>
+          </mat-card>
+        }
+      }
+    </div>
+  </div>

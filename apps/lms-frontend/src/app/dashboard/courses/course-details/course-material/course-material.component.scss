@@ -1,0 +1,80 @@
+// course-materials.component.scss
+.materials-container {
+  padding: 20px;
+  display: grid;
+  gap: 20px;
+  grid-template-columns: 1fr;
+
+  @media (min-width: 1024px) {
+    grid-template-columns: 350px 1fr;
+  }
+}
+
+.upload-section {
+  position: sticky;
+  top: 20px;
+}
+
+.full-width {
+  width: 100%;
+  margin-bottom: 16px;
+}
+
+.file-upload {
+  margin: 16px 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.selected-file {
+  color: #666;
+  font-size: 0.9em;
+}
+
+.materials-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.folder-section {
+  .material-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px;
+    border-bottom: 1px solid #eee;
+
+    &:last-child {
+      border-bottom: none;
+    }
+  }
+
+  .material-info {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    flex: 1;
+
+    mat-icon {
+      color: #666;
+    }
+  }
+
+  .material-details {
+    h3 {
+      margin: 0;
+      font-size: 1.1em;
+    }
+
+    p {
+      margin: 4px 0;
+      color: #666;
+    }
+
+    small {
+      color: #999;
+    }
+  }
+}
