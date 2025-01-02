@@ -67,3 +67,32 @@ export interface CourseMaterial {
   dateUploaded: Date;
   folder: string;
 }
+
+export interface DiscussionPost {
+  id: string;
+  title: string;
+  content: string;
+  authorId: string;
+  authorName: string;
+  datePosted: Date;
+  lastUpdated: Date;
+  mediaUrls?: string[];
+  mediaTypes?: string[];
+  likes: number;
+  tags?: string[];
+  comments: DiscussionComment[];
+}
+
+export interface DiscussionComment {
+  id: string;
+  content: string;
+  authorId: string;
+  authorName: string;
+  datePosted: Date;
+  lastUpdated?: Date;
+  mediaUrls?: string[];
+  mediaTypes?: string[];
+  likes: number;
+  parentCommentId?: string;
+  replies: DiscussionComment[];
+}

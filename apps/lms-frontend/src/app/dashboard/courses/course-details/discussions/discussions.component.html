@@ -1,1 +1,179 @@
-<p>discussions works!</p>
+<!-- discussion.component.html -->
+<div class="discussion-container">
+    <!-- Create Post Form -->
+    <mat-card class="post-form-card">
+      <mat-card-header>
+        <mat-card-title>Create New Discussion</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <form [formGroup]="postForm" (ngSubmit)="createPost()">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Title</mat-label>
+            <input matInput formControlName="title" placeholder="Discussion title">
+          </mat-form-field>
+  
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Content</mat-label>
+            <textarea matInput formControlName="content" rows="4"></textarea>
+          </mat-form-field>
+  
+          <div class="file-upload-section">
+            <input
+              type="file"
+              #fileInput
+              (change)="onFileSelected($event)"
+              multiple
+              style="display: none"
+            >
+            <button
+              type="button"
+              mat-stroked-button
+              (click)="fileInput.click()"
+            >
+              <mat-icon>attach_file</mat-icon>
+              Add Media
+            </button>
+            
+            <div class="uploaded-files">
+              @for (file of uploadedFiles; track file.name; let i = $index) {
+                <div class="file-chip">
+                  <span>{{ file.name }}</span>
+                  <button mat-icon-button (click)="removeFile(i)">
+                    <mat-icon>close</mat-icon>
+                  </button>
+                </div>
+              }
+            </div>
+          </div>
+  
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Tags</mat-label>
+            <mat-chip-grid #chipList>
+              @for (tag of postForm.get('tags')?.value; track tag) {
+                <mat-chip>{{ tag }}</mat-chip>
+              }
+            </mat-chip-grid>
+            <input
+              [matChipInputFor]="chipList"
+              (matChipInputTokenEnd)="addTag($event)"
+            >
+          </mat-form-field>
+  
+          <button mat-raised-button color="primary" type="submit">
+            Post Discussion
+          </button>
+        </form>
+      </mat-card-content>
+    </mat-card>
+  
+    <!-- Discussion Posts -->
+    <div class="posts-container">
+      @for (post of posts; track post.id) {
+        <mat-card class="post-card">
+          <mat-card-header>
+            <mat-card-title>{{ post.title }}</mat-card-title>
+            <mat-card-subtitle>
+              Posted by {{ post.authorName }} • {{ getTimeAgo(post.datePosted) }}
+            </mat-card-subtitle>
+          </mat-card-header>
+          
+          <mat-card-content>
+            <p>{{ post.content }}</p>
+            
+            @if (post.mediaUrls?.length) {
+              <div class="media-grid">
+                @for (url of post.mediaUrls; track url) {
+                  <div class="media-item">
+                    @if (isImage(url)) {
+                      <img [src]="url" [alt]="'Post media'">
+                    } @else {
+                      <video [src]="url" controls></video>
+                    }
+                  </div>
+                }
+              </div>
+            }
+  
+            @if (post.tags?.length) {
+              <div class="tags-container">
+                @for (tag of post.tags; track tag) {
+                  <mat-chip>{{ tag }}</mat-chip>
+                }
+              </div>
+            }
+          </mat-card-content>
+  
+          <mat-card-actions>
+            <button mat-button (click)="likePost(post)">
+              <mat-icon>thumb_up</mat-icon>
+              {{ post.likes }}
+            </button>
+            <button mat-button (click)="selectedPost = post">
+              <mat-icon>comment</mat-icon>
+              {{ post.comments.length }}
+            </button>
+          </mat-card-actions>
+  
+          <!-- Comments Section -->
+          @if (selectedPost?.id === post.id) {
+            <mat-card-content class="comments-section">
+              <form [formGroup]="commentForm" (ngSubmit)="addComment(post)">
+                <mat-form-field appearance="outline" class="full-width">
+                  <mat-label>Add a comment</mat-label>
+                  <textarea matInput formControlName="content" rows="2"></textarea>
+                </mat-form-field>
+                <button mat-raised-button color="primary" type="submit">
+                  Comment
+                </button>
+              </form>
+  
+              <div class="comments-list">
+                @for (comment of post.comments; track comment.id) {
+                  <div class="comment">
+                    <div class="comment-header">
+                      <span class="author">{{ comment.authorName }}</span>
+                      <span class="timestamp">{{ getTimeAgo(comment.datePosted) }}</span>
+                    </div>
+                    <p>{{ comment.content }}</p>
+                    
+                    <div class="comment-actions">
+                      <button mat-button (click)="likeComment(comment)">
+                        <mat-icon>thumb_up</mat-icon>
+                        {{ comment.likes }}
+                      </button>
+                      <button mat-button (click)="replyingTo = comment">
+                        Reply
+                      </button>
+                    </div>
+  
+                    @if (replyingTo?.id === comment.id) {
+                      <form [formGroup]="commentForm" (ngSubmit)="addComment(post, comment)">
+                        <mat-form-field appearance="outline" class="full-width">
+                          <mat-label>Reply to {{ comment.authorName }}</mat-label>
+                          <textarea matInput formControlName="content" rows="2"></textarea>
+                        </mat-form-field>
+                        <button mat-raised-button color="primary" type="submit">
+                          Reply
+                        </button>
+                      </form>
+                    }
+  
+                    <!-- Nested Replies -->
+                    @if (comment.replies?.length) {
+                      <div class="replies">
+                        @for (reply of comment.replies; track reply.id) {
+                          <div class="comment reply">
+                            <!-- Same structure as parent comment -->
+                          </div>
+                        }
+                      </div>
+                    }
+                  </div>
+                }
+              </div>
+            </mat-card-content>
+          }
+        </mat-card>
+      }
+    </div>
+  </div>

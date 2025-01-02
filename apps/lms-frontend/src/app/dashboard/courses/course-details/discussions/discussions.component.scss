@@ -1,0 +1,128 @@
+// discussion.component.scss
+.discussion-container {
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  gap: 20px;
+}
+
+.post-form-card {
+  margin-bottom: 24px;
+}
+
+.full-width {
+  width: 100%;
+  margin-bottom: 16px;
+}
+
+.file-upload-section {
+  margin: 16px 0;
+
+  .uploaded-files {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 8px;
+  }
+
+  .file-chip {
+    display: flex;
+    align-items: center;
+    background: #f0f0f0;
+    padding: 4px 8px;
+    border-radius: 16px;
+    font-size: 14px;
+
+    button {
+      width: 20px;
+      height: 20px;
+      line-height: 20px;
+      margin-left: 4px;
+
+      mat-icon {
+        font-size: 16px;
+        width: 16px;
+        height: 16px;
+        line-height: 16px;
+      }
+    }
+  }
+}
+
+.posts-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.post-card {
+  .media-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 12px;
+    margin: 16px 0;
+
+    .media-item {
+      img,
+      video {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+        border-radius: 4px;
+      }
+    }
+  }
+
+  .tags-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 12px 0;
+  }
+}
+
+.comments-section {
+  padding-top: 16px;
+  border-top: 1px solid #eee;
+
+  .comments-list {
+    margin-top: 16px;
+  }
+
+  .comment {
+    padding: 12px;
+    border-left: 2px solid #eee;
+    margin: 12px 0;
+
+    .comment-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 4px;
+
+      .author {
+        font-weight: 500;
+      }
+
+      .timestamp {
+        color: #666;
+        font-size: 0.9em;
+      }
+    }
+
+    .comment-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    &.reply {
+      margin-left: 24px;
+      font-size: 0.95em;
+    }
+  }
+
+  .replies {
+    margin-left: 24px;
+  }
+}
