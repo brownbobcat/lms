@@ -7,12 +7,13 @@ import { configValidationSchema } from '../config/configuration.schema';
 import { AuthModule } from '../auth/auth.module';
 import { CourseModule } from '../courses/course.module';
 import { UsersModule } from '../users/users.module';
+import { AnnouncementsModule } from '../announcements/announcements.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      validationSchema: configValidationSchema
+      validationSchema: configValidationSchema,
     }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
@@ -24,14 +25,15 @@ import { UsersModule } from '../users/users.module';
         password: configService.get('DB_PASSWORD'),
         database: configService.get('DB_DATABASE'),
         entities: [__dirname + '/**/*.entity{.ts,.js}'],
-        synchronize: true, 
-        autoLoadEntities: true
+        synchronize: true,
+        autoLoadEntities: true,
       }),
       inject: [ConfigService],
     }),
     AuthModule,
     CourseModule,
-    UsersModule
+    UsersModule,
+    AnnouncementsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
