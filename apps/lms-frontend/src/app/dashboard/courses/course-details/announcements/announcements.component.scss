@@ -3,11 +3,70 @@
   display: flex;
   flex-direction: column;
   gap: 24px;
+  max-width: 100%;
+  margin: 0 auto;
+}
+
+.announcements-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.create-form-container {
+  max-width: 800px;
+  margin: 0 auto 32px;
+ }
+ 
+ .create-announcement-card {
+  padding: 24px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+ }
+ 
+ mat-card-header {
+  margin-bottom: 24px;
+ }
+ 
+ mat-card-title {
+  font-size: 1.5rem;
+  color: #333;
+ }
+ 
+ .full-width {
+  width: 100%;
+  margin-bottom: 16px;
+ }
+ 
+ textarea {
+  resize: vertical;
+  min-height: 120px;
+ }
+ 
+ .form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 24px;
+ }
+ 
+ button[type="submit"] {
+  min-width: 120px;
+ }
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 16px;
 }
 
 .announcement-card {
   border-left: 4px solid #38628d;
   transition: transform 0.2s;
+  margin: 12px 0;
 }
 
 .announcement-card:hover {
@@ -28,6 +87,7 @@ mat-divider {
 
 .posted-by {
   margin-top: 16px;
+  padding-top: 16px;
 }
 
 .author-info {
@@ -63,4 +123,10 @@ mat-divider {
     padding: 16px;
     gap: 16px;
   }
+}
+
+.delete-button {
+  position: absolute;
+  right: 8px;
+  top: 8px;
 }

@@ -1,33 +1,99 @@
+<!-- announcements.component.html -->
 <div class="announcements-container">
-  <mat-card
-    *ngFor="let announcement of announcements"
-    class="announcement-card"
-  >
-    <mat-card-header>
-      <mat-card-title>{{ announcement.title }}</mat-card-title>
-      <mat-card-subtitle>
-        {{ announcement.datePosted | date : 'medium' }}
-      </mat-card-subtitle>
-    </mat-card-header>
+  @if (isInstructor) {
+  <div class="announcements-header">
+    <h2>Course Announcements</h2>
+    <button mat-raised-button color="primary" (click)="toggleCreateForm()">
+      {{ showCreateForm ? 'View Announcements' : 'Create Announcement' }}
+    </button>
+  </div>
+  }
 
-    <mat-card-content>
-      <p class="announcement-content">{{ announcement.content }}</p>
+  <!-- Create Announcement Form for Instructors -->
+  @if (isInstructor && showCreateForm) {
+  <div class="create-form-container">
+    <mat-card class="create-announcement-card">
+      <mat-card-header>
+        <mat-card-title>Create New Announcement</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <form (ngSubmit)="createAnnouncement()" #announcementForm="ngForm">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Title</mat-label>
+            <input
+              matInput
+              [(ngModel)]="newAnnouncement.title"
+              name="title"
+              required
+            />
+          </mat-form-field>
 
-      <mat-divider></mat-divider>
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Content</mat-label>
+            <textarea
+              matInput
+              [(ngModel)]="newAnnouncement.content"
+              name="content"
+              rows="6"
+              required
+            ></textarea>
+          </mat-form-field>
 
-      <div class="posted-by">
-        <div class="author-info">
-          <img
-            [src]="announcement.postedBy.avatar || 'assets/default-avatar.png'"
-            class="author-avatar"
-            alt="Author avatar"
-          />
-          <div class="author-details">
-            <span class="author-name">{{ announcement.postedBy.name }}</span>
-            <span class="author-role">{{ announcement.postedBy.role }}</span>
+          <div class="form-actions">
+            <button mat-button type="button" (click)="toggleCreateForm()">
+              Cancel
+            </button>
+            <button
+              mat-raised-button
+              color="primary"
+              type="submit"
+              [disabled]="!announcementForm.form.valid"
+            >
+              Post Announcement
+            </button>
+          </div>
+        </form>
+      </mat-card-content>
+    </mat-card>
+  </div>
+  }
+
+  <!-- Announcements List -->
+  @if (!showCreateForm || !isInstructor) {
+  <div class="announcements-list">
+    @for (announcement of announcements; track $index) {
+    <mat-card class="announcement-card">
+      <mat-card-header>
+        <mat-card-title>{{ announcement.title }}</mat-card-title>
+        <mat-card-subtitle>
+          {{ announcement.datePosted | date : 'medium' }}
+        </mat-card-subtitle>
+        @if (isInstructor) {
+        <button
+          mat-icon-button
+          color="warn"
+          class="delete-button"
+          (click)="deleteAnnouncement(announcement.id)"
+        >
+          <mat-icon>delete</mat-icon>
+        </button>
+        }
+      </mat-card-header>
+
+      <mat-card-content>
+        <p class="announcement-content">{{ announcement.content }}</p>
+        <mat-divider></mat-divider>
+        <div class="posted-by">
+          <div class="author-info">
+            <div class="author-details">
+              <span class="author-name">{{ announcement.postedBy.name }}</span>
+              <span class="author-role">{{ announcement.postedBy.role }}</span>
+            </div>
           </div>
         </div>
-      </div>
-    </mat-card-content>
-  </mat-card>
+      </mat-card-content>
+    </mat-card>
+    }
+  </div>
+  }
 </div>

@@ -38,6 +38,7 @@ export interface Course {
 }
 
 export interface Announcement {
+  id: string
   title: string;
   datePosted: Date;
   content: string;
@@ -95,4 +96,10 @@ export interface DiscussionComment {
   likes: number;
   parentCommentId?: string;
   replies: DiscussionComment[];
+}
+
+export enum UserRole {
+  STUDENT = 'student',
+  INSTRUCTOR = 'instructor',
+  ADMIN = 'admin'
 }
