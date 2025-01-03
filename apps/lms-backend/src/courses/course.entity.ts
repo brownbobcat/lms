@@ -7,6 +7,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { User } from '../users/users.entity';
+import { CourseStatus } from './course.type';
 
 @Entity('courses')
 export class Course {
@@ -20,14 +21,17 @@ export class Course {
   description: string;
 
   @Column()
+  code: string;
+
+  @Column()
   thumbnail: string;
 
   @Column({
     type: 'enum',
-    enum: ['draft', 'published', 'archived'],
-    default: 'draft',
+    enum: CourseStatus,
+    default: CourseStatus.DRAFT
   })
-  status: string;
+  status: CourseStatus;
 
   @ManyToOne(() => User, (user) => user.coursesCreated)
   instructor: User;
