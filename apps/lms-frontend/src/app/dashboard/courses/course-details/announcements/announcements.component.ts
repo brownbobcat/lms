@@ -1,46 +1,95 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Announcement } from '../../../../../../libs/types';
+import { Announcement, UserRole } from '../../../../../../libs/types';
 import { MatCardModule } from '@angular/material/card';
 import { MatDividerModule } from '@angular/material/divider';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatButtonModule } from '@angular/material/button';
+import { FormsModule } from '@angular/forms';
+import { AnnouncementsService } from './announcements.service';
+import { AuthService } from '../../../../auth/auth.service';
+import { ActivatedRoute } from '@angular/router';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-announcements',
   standalone: true,
-  imports: [CommonModule, MatCardModule, MatDividerModule],
+  imports: [
+    CommonModule,
+    FormsModule,
+    MatCardModule,
+    MatDividerModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule,
+    MatIconModule
+  ],
   templateUrl: './announcements.component.html',
   styleUrl: './announcements.component.scss',
 })
-export class AnnouncementsComponent {
-  announcements: Announcement[] = [
-    {
-      title: 'Welcome to Advanced Web Development',
-      datePosted: new Date('2024-01-15T09:00:00'),
-      content: `Welcome to the Advanced Web Development course! 
-      
-I'm excited to embark on this learning journey with all of you. Please take some time to review the course syllabus and familiarize yourself with the course requirements.
+export class AnnouncementsComponent implements OnInit {
+  announcements: Announcement[] = [];
+  isInstructor = false;
+  showCreateForm = false;
+  courseId = '';
+  newAnnouncement = {
+    title: '',
+    content: '',
+    courseId: '', 
+  };
 
-Key points to note:
-- First assignment will be posted next week
-- Lab sessions start from Wednesday
-- Make sure to join our Discord channel for discussions`,
-      postedBy: {
-        name: 'Dr. Sarah Smith',
-        role: 'Course Instructor',
-        avatar: 'assets/instructor-avatar.png',
-      },
-    },
-    {
-      title: 'Assignment #1 Posted',
-      datePosted: new Date('2024-01-18T14:30:00'),
-      content:
-        'The first assignment has been posted. Please check the Assignments tab. Deadline: January 25th, 11:59 PM. If you have any questions, feel free to post them in the discussion forum.',
-      postedBy: {
-        name: 'Mike Johnson',
-        role: 'Teaching Assistant',
-        avatar: 'assets/ta-avatar.png',
-      },
-    },
-    // Add more announcements as needed
-  ];
+  constructor(
+    private authService: AuthService,
+    private announcementsService: AnnouncementsService,
+    private route: ActivatedRoute,
+  ) {
+    this.courseId = this.route.snapshot.paramMap.get('id') || '';
+    this.newAnnouncement.courseId = this.courseId;
+  }
+
+  ngOnInit() {
+    this.isInstructor = this.authService.user()?.role === UserRole.INSTRUCTOR;
+    this.loadAnnouncements();
+    console.log('user role', this.authService.user()?.role)
+    console.log('Instructor', this.isInstructor)
+  }
+
+  async loadAnnouncements() {
+    try {
+      this.announcements = await this.announcementsService.getAnnouncements();
+      console.log('announcements', this.announcements)
+    } catch (error) {
+      console.error('Error loading announcements:', error);
+    }
+  }
+
+  async createAnnouncement() {
+    if (!this.newAnnouncement.title || !this.newAnnouncement.content) return;
+
+    try {
+      await this.announcementsService.createAnnouncement(this.newAnnouncement);
+      this.newAnnouncement = {
+        title: '',
+        content: '',
+        courseId: this.newAnnouncement.courseId,
+      };
+      await this.loadAnnouncements();
+    } catch (error) {
+      console.error('Error creating announcement:', error);
+    }
+  }
+
+  toggleCreateForm() {
+    this.showCreateForm = !this.showCreateForm;
+  }
+
+  async deleteAnnouncement(id: string) {
+    try {
+      await this.announcementsService.deleteAnnouncement(id);
+      await this.loadAnnouncements();
+    } catch (error) {
+      console.error('Error deleting announcement:', error);
+    }
+   }
 }
