@@ -1,4 +1,12 @@
-import { Controller, Get, Post, Body, Param, UseGuards, Request } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Param,
+  UseGuards,
+  Request,
+} from '@nestjs/common';
 import { UserRole } from '../users/users.types';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
@@ -21,6 +29,13 @@ export class CoursesController {
   @Get()
   findAll() {
     return this.courseService.findAll();
+  }
+
+  @Get('instructor/courses')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRole.INSTRUCTOR)
+  findInstructorCourses(@Request() req) {
+    return this.courseService.findAllByInstructor(req.user.id);
   }
 
   @Get(':id')

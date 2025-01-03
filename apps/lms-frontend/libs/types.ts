@@ -31,11 +31,19 @@ export interface LoginForm {
 }
 
 export interface Course {
-  code: string;
+  id: string;
   title: string;
-  instructor: string;
-  isFavorite: boolean;
+  description: string;
+  code: string;
+  thumbnail?: string;
+  status: string;
+  instructor: {
+    name: string;
+    email: string;
+  };
+  isFavorite?: boolean;
 }
+
 
 export interface Announcement {
   id: string
