@@ -12,8 +12,10 @@ export class AnnouncementsService {
   
     constructor(private http: HttpClient) {}
   
-    async getAnnouncements(): Promise<Announcement[]> {
-      return firstValueFrom(this.http.get<Announcement[]>(this.apiUrl));
+    async getAnnouncementsByCourse(courseId: string): Promise<Announcement[]> {
+      return firstValueFrom(
+        this.http.get<Announcement[]>(`${this.apiUrl}/course/${courseId}`)
+      );
     }
   
     async createAnnouncement(announcement: Partial<Announcement>): Promise<Announcement> {

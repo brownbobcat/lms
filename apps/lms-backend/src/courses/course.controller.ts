@@ -6,6 +6,7 @@ import {
   Param,
   UseGuards,
   Request,
+  Delete,
 } from '@nestjs/common';
 import { UserRole } from '../users/users.types';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
@@ -41,5 +42,12 @@ export class CoursesController {
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.courseService.findOne(id);
+  }
+
+  @Delete(':id')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRole.INSTRUCTOR)
+  async deleteCourse(@Param('id') id: string, @Request() req) {
+    return this.courseService.delete(id, req.user.id);
   }
 }

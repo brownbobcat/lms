@@ -13,17 +13,14 @@ export const appRoutes: Route[] = [
   {
     path: 'login',
     component: LoginComponent,
-    // canActivate: [canActivateAuthPages],
   },
   {
     path: 'sign-up',
     component: SignupComponent,
-    // canActivate: [canActivateAuthPages],
   },
   {
     path: 'forgot-password',
     component: ForgotPasswordComponent,
-    // canActivate: [canActivateAuthPages],
   },
   ...dashboardRoutes
 ];

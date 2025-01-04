@@ -56,7 +56,6 @@ export class LoginComponent implements OnDestroy {
     }),
   });
 
-  // readonly isFormValid = computed(() => this.loginForm.valid);
   readonly isFormValid = computed(() => {
     const emailValid = this.emailControl?.valid;
     const passwordValid = this.passwordControl?.valid;

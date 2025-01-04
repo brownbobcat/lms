@@ -16,9 +16,9 @@ export class Announcement {
   @CreateDateColumn()
   datePosted: Date;
 
-  @ManyToOne(() => User)
+  @ManyToOne(() => User, { eager: true })
   postedBy: User;
 
-  @ManyToOne(() => Course)
+  @ManyToOne(() => Course, course => course.announcements)
   course: Course;
 }

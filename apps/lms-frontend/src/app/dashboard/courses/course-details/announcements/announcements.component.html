@@ -59,7 +59,15 @@
   }
 
   <!-- Announcements List -->
-  @if (!showCreateForm || !isInstructor) {
+  @if (loading) {
+  <mat-spinner diameter="40"></mat-spinner>
+  } @else if (announcements.length === 0 && !showCreateForm) {
+  <div class="no-announcements">
+    <mat-icon>campaign</mat-icon>
+    <h3>No Announcements Yet</h3>
+    <p>There are no announcements for this course at the moment.</p>
+  </div>
+  } @if (!showCreateForm || !isInstructor) {
   <div class="announcements-list">
     @for (announcement of announcements; track $index) {
     <mat-card class="announcement-card">

@@ -5,9 +5,11 @@ import {
   ManyToOne,
   CreateDateColumn,
   UpdateDateColumn,
+  OneToMany,
 } from 'typeorm';
 import { User } from '../users/users.entity';
 import { CourseStatus } from './course.type';
+import { Announcement } from '../announcements/announcement.entity';
 
 @Entity('courses')
 export class Course {
@@ -35,6 +37,9 @@ export class Course {
 
   @ManyToOne(() => User, (user) => user.coursesCreated)
   instructor: User;
+
+  @OneToMany(() => Announcement, announcement => announcement.course)
+  announcements: Announcement[];
 
   @CreateDateColumn()
   createdAt: Date;

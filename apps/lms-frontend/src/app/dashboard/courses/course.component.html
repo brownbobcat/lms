@@ -1,135 +1,215 @@
 <div class="container">
-  @if (isInstructor) {
-    @if (!showCreateForm) {
-      <div class="header-actions">
-        <h2>My Courses</h2>
-        <button class="btn" mat-raised-button color="primary" (click)="toggleCreateForm()">
-          <mat-icon>add</mat-icon>
-          <span>Create Course</span> 
+   @if (!showCreateForm) {
+  <div class="header-actions">
+    <h2>Courses</h2>
+    <button
+      class="btn"
+      mat-raised-button
+      color="primary"
+      (click)="toggleCreateForm()"
+    >
+      <mat-icon>add</mat-icon>
+      <span>Create Course</span>
+    </button>
+  </div>
+
+  <div class="courses-container">
+    <div class="filters">
+      <mat-form-field appearance="outline" class="search-field">
+        <mat-icon matPrefix>search</mat-icon>
+        <input
+          matInput
+          [formControl]="searchControl"
+          placeholder="Search courses..."
+        />
+        @if (searchControl.value) {
+        <button
+          class="close-btn"
+          matSuffix
+          mat-icon-button
+          aria-label="Clear"
+          (click)="resetSearch()"
+        >
+          <mat-icon>close</mat-icon>
         </button>
-      </div>
-
-      <div class="courses-container">
-        <div class="filters">
-          <mat-form-field appearance="outline" class="search-field">
-            <mat-icon matPrefix>search</mat-icon>
-            <input matInput [formControl]="searchControl" placeholder="Search courses...">
-          </mat-form-field>
-
-          <mat-form-field appearance="outline" class="semester-field">
-            <mat-label>Semester</mat-label>
-            <mat-select [formControl]="semesterControl">
-              <mat-option value="all">All Semesters</mat-option>
-              <mat-option value="fall2024">Fall 2024</mat-option>
-              <mat-option value="summer2024">Summer 2024</mat-option>
-              <mat-option value="spring2024">Spring 2024</mat-option>
-            </mat-select>
-          </mat-form-field>
-
-          <mat-button-toggle-group [formControl]="viewControl">
-            <mat-button-toggle value="grid">
-              <mat-icon>grid_view</mat-icon>
-            </mat-button-toggle>
-            <mat-button-toggle value="list">
-              <mat-icon>view_list</mat-icon>
-            </mat-button-toggle>
-          </mat-button-toggle-group>
-        </div>
-
-        @if (loading) {
-          <mat-spinner diameter="40"></mat-spinner>
-        } @else if (error) {
-          <mat-error>{{ error }}</mat-error>
-        } @else {
-          @if (viewControl.value === 'grid') {
-            <div class="course-grid">
-              @for (course of courses; track course.id) {
-                <mat-card class="course-card" (click)="goToCourse(course.code)">
-                  <mat-card-header>
-                    <mat-card-title>{{ course.title }}</mat-card-title>
-                    <mat-card-subtitle>{{ course.code }}</mat-card-subtitle>
-                  </mat-card-header>
-                  <mat-card-content>
-                    <p class="description">{{ course.description }}</p>
-                    <div class="instructor-row">
-                      <p class="instructor">Instructor: {{ course.instructor.name }}</p>
-                      <button mat-icon-button (click)="toggleFavorite(course)">
-                        <mat-icon [class.favorited]="course.isFavorite">star</mat-icon>
-                      </button>
-                    </div>
-                  </mat-card-content>
-                </mat-card>
-              }
-            </div>
-          } @else {
-            <mat-nav-list class="course-list">
-              @for (course of courses; track course.id) {
-                <mat-list-item (click)="goToCourse(course.code)">
-                  <div class="list-item-content">
-                    <div class="course-info">
-                      <h3 matLine>{{ course.title }}</h3>
-                      <p matLine>{{ course.code }} | Instructor: {{ course.instructor.name }}</p>
-                    </div>
-                    <button mat-icon-button (click)="toggleFavorite(course)">
-                      <mat-icon [class.favorited]="course.isFavorite">star</mat-icon>
-                    </button>
-                  </div>
-                </mat-list-item>
-              }
-            </mat-nav-list>
-          }
         }
-      </div>
-    } @else {
-      <div class="header-actions">
-        <h2>Create New Course</h2>
-        <button class="btn" mat-raised-button (click)="toggleCreateForm()">
-          <mat-icon>arrow_back</mat-icon>
-          Back to Courses
-        </button>
-      </div>
+      </mat-form-field>
 
-      <mat-card class="create-course-form">
-        <mat-card-content>
-          <form [formGroup]="courseForm" (ngSubmit)="createCourse()">
-            <mat-form-field appearance="outline">
-              <mat-label>Course Title</mat-label>
-              <input matInput formControlName="title" placeholder="Enter course title">
-              @if (courseForm.get('title')?.hasError('required') && courseForm.get('title')?.touched) {
-                <mat-error>Title is required</mat-error>
-              }
-            </mat-form-field>
+      <mat-form-field appearance="outline" class="semester-field">
+        <mat-label>Semester</mat-label>
+        <mat-select [formControl]="semesterControl">
+          <mat-option value="all">All Semesters</mat-option>
+          <mat-option value="fall2024">Fall 2024</mat-option>
+          <mat-option value="summer2024">Summer 2024</mat-option>
+          <mat-option value="spring2024">Spring 2024</mat-option>
+        </mat-select>
+      </mat-form-field>
 
-            <mat-form-field appearance="outline">
-              <mat-label>Course Code</mat-label>
-              <input matInput formControlName="code" placeholder="Enter course code">
-              @if (courseForm.get('code')?.hasError('required') && courseForm.get('code')?.touched) {
-                <mat-error>Code is required</mat-error>
-              }
-            </mat-form-field>
+      <mat-button-toggle-group [formControl]="viewControl" class="toggle-field">
+        <mat-button-toggle value="grid">
+          <mat-icon>grid_view</mat-icon>
+        </mat-button-toggle>
+        <mat-button-toggle value="list">
+          <mat-icon>view_list</mat-icon>
+        </mat-button-toggle>
+      </mat-button-toggle-group>
+    </div>
 
-            <mat-form-field appearance="outline">
-              <mat-label>Description</mat-label>
-              <textarea matInput formControlName="description" rows="4"></textarea>
-              @if (courseForm.get('description')?.hasError('required') && courseForm.get('description')?.touched) {
-                <mat-error>Description is required</mat-error>
-              }
-            </mat-form-field>
-
-            <mat-form-field appearance="outline">
-              <mat-label>Thumbnail URL</mat-label>
-              <input matInput formControlName="thumbnail" placeholder="Enter thumbnail URL">
-            </mat-form-field>
-
-            <div class="form-actions">
-              <button class="btn-sec" mat-raised-button type="button" (click)="toggleCreateForm()">Cancel</button>
-              <button class="btn" mat-raised-button color="primary" type="submit" [disabled]="!courseForm.valid || loading">
-                Create Course
-              </button>
+    @if (loading) {
+    <mat-spinner diameter="40"></mat-spinner>
+    } @else if (error) {
+    <mat-error>{{ error }}</mat-error>
+    } @else if (hasNoCourses) {
+    <div class="no-courses-message">
+      <mat-icon>search_off</mat-icon>
+      <p>No courses found matching "{{ searchControl.value }}"</p>
+    </div>
+    } @else { @if (viewControl.value === 'grid') {
+    <div class="course-grid">
+      @for (course of courses; track course.id) {
+      <mat-card class="course-card" (click)="goToCourse(course.id)">
+        <mat-card-header>
+          <div class="title-row">
+            <div class="">
+              <mat-card-subtitle>{{ course.code }}</mat-card-subtitle>
+              <span>{{ course.title }}</span>
             </div>
-          </form>
+
+            @if (isInstructor) {
+            <button
+              mat-icon-button
+              color="warn"
+              (click)="deleteCourse($event, course.id)"
+              class="delete-btn"
+              aria-label="Delete course"
+            >
+              <mat-icon>delete</mat-icon>
+            </button>
+          }
+          </div>
+        </mat-card-header>
+        <mat-card-content>
+          <p class="description">{{ course.description }}</p>
+          <div class="instructor-row">
+            <p class="instructor">Instructor: {{ course.instructor.name }}</p>
+            <button mat-icon-button (click)="toggleFavorite(course)">
+              <mat-icon [class.favorited]="course.isFavorite">star</mat-icon>
+            </button>
+          </div>
         </mat-card-content>
       </mat-card>
-    }
-  }
+      }
+    </div>
+    } @else {
+    <mat-nav-list class="course-list">
+      @for (course of courses; track course.id) {
+      <mat-list-item (click)="goToCourse(course.id)" class="list-item">
+        <div class="list-item-content">
+          <div class="course-info">
+            <div class="title-row">
+              <h3 matLine>{{ course.title }}</h3>
+            </div>
+            <p matLine>
+              {{ course.code }} | Instructor: {{ course.instructor.name }}
+            </p>
+          </div>
+          <div class="action-btn">
+            <button
+              mat-icon-button
+              color="warn"
+              (click)="deleteCourse($event, course.id)"
+              class="delete-btn"
+              aria-label="Delete course"
+            >
+              <mat-icon>delete</mat-icon>
+            </button>
+            <button mat-icon-button (click)="toggleFavorite(course)">
+              <mat-icon [class.favorited]="course.isFavorite">star</mat-icon>
+            </button>
+          </div>
+        </div>
+      </mat-list-item>
+      }
+    </mat-nav-list>
+    } }
+  </div>
+  } @else {
+  <div class="header-actions">
+    <h2>Create New Course</h2>
+    <button class="btn" mat-raised-button (click)="toggleCreateForm()">
+      <mat-icon>arrow_back</mat-icon>
+      Back to Courses
+    </button>
+  </div>
+
+  <mat-card class="create-course-form">
+    <mat-card-content>
+      <form [formGroup]="courseForm" (ngSubmit)="createCourse()">
+        <mat-form-field appearance="outline">
+          <mat-label>Course Title</mat-label>
+          <input
+            matInput
+            formControlName="title"
+            placeholder="Enter course title"
+          />
+          @if (courseForm.get('title')?.hasError('required') &&
+          courseForm.get('title')?.touched) {
+          <mat-error>Title is required</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Course Code</mat-label>
+          <input
+            matInput
+            formControlName="code"
+            placeholder="Enter course code"
+          />
+          @if (courseForm.get('code')?.hasError('required') &&
+          courseForm.get('code')?.touched) {
+          <mat-error>Code is required</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Description</mat-label>
+          <textarea matInput formControlName="description" rows="4"></textarea>
+          @if (courseForm.get('description')?.hasError('required') &&
+          courseForm.get('description')?.touched) {
+          <mat-error>Description is required</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Thumbnail URL</mat-label>
+          <input
+            matInput
+            formControlName="thumbnail"
+            placeholder="Enter thumbnail URL"
+          />
+        </mat-form-field>
+
+        <div class="form-actions">
+          <button
+            class="btn-sec"
+            mat-raised-button
+            type="button"
+            (click)="toggleCreateForm()"
+          >
+            Cancel
+          </button>
+          <button
+            class="btn"
+            mat-raised-button
+            color="primary"
+            type="submit"
+            [disabled]="!courseForm.valid || loading"
+          >
+            Create Course
+          </button>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
+  } 
 </div>
