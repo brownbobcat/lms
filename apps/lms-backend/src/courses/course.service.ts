@@ -125,4 +125,16 @@ export class CourseService {
       }
     };
   }
+
+  async delete(courseId: string, instructorId: string): Promise<void> {
+    const course = await this.coursesRepository.findOne({
+      where: { id: courseId, instructor: { id: instructorId } },
+    });
+  
+    if (!course) {
+      throw new NotFoundException('Course not found or you are not authorized to delete it');
+    }
+  
+    await this.coursesRepository.remove(course);
+  }
 }

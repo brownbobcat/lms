@@ -39,6 +39,7 @@ export class CoursesComponent implements OnInit {
   semesterControl = new FormControl('all');
   viewControl = new FormControl('grid');
   courses: Course[] = [];
+  originalCourses: Course[] = [];
   loading = false;
   error: string | null = null;
   isInstructor = false;
@@ -65,6 +66,7 @@ export class CoursesComponent implements OnInit {
     request$.subscribe({
       next: (courses) => {
         this.courses = courses;
+        this.originalCourses = [...courses];
         this.loading = false;
       },
       error: (err) => {
@@ -73,12 +75,10 @@ export class CoursesComponent implements OnInit {
       }
     });
     
-    // Add search filter
     this.searchControl.valueChanges.pipe(
       debounceTime(300)
     ).subscribe(searchTerm => {
-      if (!searchTerm) return;
-      this.filterCourses(searchTerm);
+      this.filterCourses(searchTerm || '');
     });
   }
 
@@ -108,21 +108,61 @@ export class CoursesComponent implements OnInit {
   }
 
   private filterCourses(searchTerm: string): void {
-    // Implement search logic
+    if (!searchTerm.trim()) {
+      this.courses = [...this.originalCourses];
+      return;
+    }
+  
+    const term = searchTerm.toLowerCase();
+    
+    this.courses = this.originalCourses.filter(course => 
+      course.title.toLowerCase().includes(term) ||
+      course.code.toLowerCase().includes(term) ||
+      course.description.toLowerCase().includes(term) ||
+      course.instructor.name.toLowerCase().includes(term)
+    );
+  }
+
+  resetSearch(): void {
+    this.searchControl.setValue('');
+    this.courses = [...this.originalCourses];
   }
 
   toggleFavorite(course: Course): void {
     course.isFavorite = !course.isFavorite;
   }
 
-  goToCourse(courseCode: string): void {
-    this.router.navigate(['/dashboard/courses', courseCode]);
+  goToCourse(courseId: string): void {
+    this.router.navigate(['/dashboard/courses', courseId]);
   }
 
   toggleCreateForm(): void {
     this.showCreateForm = !this.showCreateForm;
     if (!this.showCreateForm) {
       this.courseForm.reset();
+    }
+  }
+
+  get hasNoCourses(): boolean {
+    return this.courses.length === 0;
+  }
+
+  deleteCourse(event: Event, courseId: string): void {
+    event.stopPropagation(); 
+    
+    if (confirm('Are you sure you want to delete this course? This action cannot be undone.')) {
+      this.loading = true;
+      this.courseService.deleteCourse(courseId).subscribe({
+        next: () => {
+          this.courses = this.courses.filter(course => course.id !== courseId);
+          this.originalCourses = this.originalCourses.filter(course => course.id !== courseId);
+          this.loading = false;
+        },
+        error: (err) => {
+          this.error = 'Failed to delete course';
+          this.loading = false;
+        }
+      });
     }
   }
 }

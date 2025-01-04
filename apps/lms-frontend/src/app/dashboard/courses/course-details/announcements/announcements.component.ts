@@ -11,6 +11,7 @@ import { AnnouncementsService } from './announcements.service';
 import { AuthService } from '../../../../auth/auth.service';
 import { ActivatedRoute } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @Component({
   selector: 'app-announcements',
@@ -23,7 +24,8 @@ import { MatIconModule } from '@angular/material/icon';
     MatFormFieldModule,
     MatInputModule,
     MatButtonModule,
-    MatIconModule
+    MatIconModule,
+    MatProgressSpinnerModule
   ],
   templateUrl: './announcements.component.html',
   styleUrl: './announcements.component.scss',
@@ -33,6 +35,7 @@ export class AnnouncementsComponent implements OnInit {
   isInstructor = false;
   showCreateForm = false;
   courseId = '';
+  loading = false;
   newAnnouncement = {
     title: '',
     content: '',
@@ -50,17 +53,17 @@ export class AnnouncementsComponent implements OnInit {
 
   ngOnInit() {
     this.isInstructor = this.authService.user()?.role === UserRole.INSTRUCTOR;
+    this.loading = true;
     this.loadAnnouncements();
-    console.log('user role', this.authService.user()?.role)
-    console.log('Instructor', this.isInstructor)
   }
 
   async loadAnnouncements() {
     try {
-      this.announcements = await this.announcementsService.getAnnouncements();
-      console.log('announcements', this.announcements)
+      this.announcements = await this.announcementsService.getAnnouncementsByCourse(this.courseId);
+      this.loading = false;
     } catch (error) {
       console.error('Error loading announcements:', error);
+      this.loading = false;
     }
   }
 
@@ -68,13 +71,20 @@ export class AnnouncementsComponent implements OnInit {
     if (!this.newAnnouncement.title || !this.newAnnouncement.content) return;
 
     try {
-      await this.announcementsService.createAnnouncement(this.newAnnouncement);
+      const announcementData = {
+        title: this.newAnnouncement.title,
+        content: this.newAnnouncement.content,
+        courseId: this.courseId
+      };
+      
+      await this.announcementsService.createAnnouncement(announcementData);
       this.newAnnouncement = {
         title: '',
         content: '',
-        courseId: this.newAnnouncement.courseId,
+        courseId: this.courseId,
       };
       await this.loadAnnouncements();
+      this.showCreateForm = false;
     } catch (error) {
       console.error('Error creating announcement:', error);
     }

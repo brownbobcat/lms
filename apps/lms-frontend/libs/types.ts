@@ -50,6 +50,7 @@ export interface Announcement {
   title: string;
   datePosted: Date;
   content: string;
+  courseId: string;
   postedBy: {
     name: string;
     role: string;

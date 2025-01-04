@@ -22,6 +22,7 @@ export class AnnouncementsService {
     const announcement = this.announcementsRepository.create({
       ...createAnnouncementDto,
       postedBy: user,
+      course: { id: createAnnouncementDto.courseId }
     });
 
     return this.announcementsRepository.save(announcement);
