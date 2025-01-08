@@ -1,6 +1,15 @@
-import { Component, computed, DestroyRef, effect, inject, OnDestroy, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  DestroyRef,
+  effect,
+  inject,
+  OnDestroy,
+  signal,
+  OnInit,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -36,11 +45,12 @@ import { LoginForm } from '../../../../libs/types';
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss',
 })
-export class LoginComponent implements OnDestroy {
+export class LoginComponent implements OnInit, OnDestroy {
   private readonly destroyRef = inject(DestroyRef);
   private readonly router = inject(Router);
   private readonly authService = inject(AuthService);
   private readonly snackBar = inject(MatSnackBar);
+  private route = inject(ActivatedRoute);
   private unsubscribe = new Subject<void>();
   showPassword = false;
   isLoading = false;
@@ -56,11 +66,43 @@ export class LoginComponent implements OnDestroy {
     }),
   });
 
+  ngOnInit() {
+    this.route.queryParams.subscribe(params => {
+      try {
+        if (params['r'] === '1' && params['e']) {
+          // Decode the email
+          const decodedEmail = atob(decodeURIComponent(params['e']));
+          
+          // Validate the decoded email
+          if (this.isValidEmail(decodedEmail)) {
+            this.loginForm.get('email')?.setValue(decodedEmail);
+            
+            this.snackBar.open('Welcome! Please login with your credentials.', 'Close', {
+              duration: 5000,
+              horizontalPosition: 'end',
+              verticalPosition: 'top'
+            });
+          }
+        }
+      } catch (error) {
+        console.error('Error decoding email parameter:', error);
+        // Silently fail if there's a decoding error
+      }
+    });
+  }
+
+  private isValidEmail(email: string): boolean {
+    // Basic email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  }
+
+
   readonly isFormValid = computed(() => {
     const emailValid = this.emailControl?.valid;
     const passwordValid = this.passwordControl?.valid;
     const formValid = this.loginForm.valid;
-    
+
     return formValid && emailValid && passwordValid;
   });
 
@@ -81,14 +123,15 @@ export class LoginComponent implements OnDestroy {
     }
 
     const { email, password } = this.loginForm.getRawValue();
-    
+
     this.isLoading = true;
-    
-    this.authService.login({ email, password })
+
+    this.authService
+      .login({ email, password })
       .pipe(
         takeUntilDestroyed(this.destroyRef),
-        finalize(() => this.isLoading = false),
-        catchError(error => {
+        finalize(() => (this.isLoading = false)),
+        catchError((error) => {
           this.showError(error);
           return EMPTY;
         })
@@ -97,12 +140,12 @@ export class LoginComponent implements OnDestroy {
         next: () => {
           this.showSuccess();
           this.router.navigate(['/dashboard/overview']);
-        }
+        },
       });
   }
 
   private markFormGroupTouched(formGroup: FormGroup): void {
-    Object.values(formGroup.controls).forEach(control => {
+    Object.values(formGroup.controls).forEach((control) => {
       control.markAsTouched();
       if (control instanceof FormGroup) {
         this.markFormGroupTouched(control);
@@ -115,7 +158,7 @@ export class LoginComponent implements OnDestroy {
       duration: 5000,
       horizontalPosition: 'end',
       verticalPosition: 'top',
-      panelClass: ['error-snackbar']
+      panelClass: ['error-snackbar'],
     });
   }
 
@@ -124,7 +167,7 @@ export class LoginComponent implements OnDestroy {
       duration: 3000,
       horizontalPosition: 'end',
       verticalPosition: 'top',
-      panelClass: ['success-snackbar']
+      panelClass: ['success-snackbar'],
     });
   }
 
@@ -141,4 +184,3 @@ export class LoginComponent implements OnDestroy {
     this.unsubscribe.complete();
   }
 }
-
