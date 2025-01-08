@@ -42,8 +42,10 @@ export interface Course {
     email: string;
   };
   isFavorite?: boolean;
+  actions?: string;
 }
 
+export type CourseData = Partial<Course>
 
 export interface Announcement {
   id: string

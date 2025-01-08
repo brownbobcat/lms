@@ -96,7 +96,7 @@ export class LoginComponent implements OnDestroy {
       .subscribe({
         next: () => {
           this.showSuccess();
-          this.router.navigate(['/dashboard']);
+          this.router.navigate(['/dashboard/overview']);
         }
       });
   }
