@@ -2,7 +2,12 @@ import { Injectable, signal, computed, inject } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
-import { AuthResponse, LoginCredentials, User } from '../../../libs/types';
+import {
+  AuthResponse,
+  LoginCredentials,
+  RegisterCredentials,
+  User,
+} from '../../../libs/types';
 import { environment } from '../../../environments/environment';
 import { Router } from '@angular/router';
 
@@ -31,6 +36,12 @@ export class AuthService {
       this.authToken.set(token);
       this.currentUser.set(JSON.parse(user));
     }
+  }
+
+  register(credentials: RegisterCredentials): Observable<AuthResponse> {
+    return this.http
+      .post<AuthResponse>(`${this.API_URL}/auth/register`, credentials)
+      .pipe(catchError(this.handleError));
   }
 
   login(credentials: LoginCredentials): Observable<AuthResponse> {
@@ -74,6 +85,9 @@ export class AuthService {
           break;
         case 404:
           errorMessage = 'Service not found';
+          break;
+        case 409:
+          errorMessage = 'User already exists';
           break;
         case 500:
           errorMessage = 'Server error';

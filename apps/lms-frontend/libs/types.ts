@@ -20,6 +20,13 @@ export interface User {
   role: string;
 }
 
+export interface RegisterCredentials {
+  fullName: string;
+  email: string;
+  password: string;
+  role: UserRole;
+}
+
 export interface AuthResponse {
   access_token: string;
   user: User;
