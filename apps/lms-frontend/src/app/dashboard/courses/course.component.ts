@@ -59,14 +59,19 @@ export class CoursesComponent implements OnInit {
   ngOnInit(): void {
     this.isInstructor = this.authService.user()?.role === UserRole.INSTRUCTOR;
     this.loading = true;
+    
+    // Subscribe to courses$ observable
+    this.courseService.courses$.subscribe(courses => {
+      this.courses = courses;
+      this.originalCourses = [...courses];
+    });
+
     const request$ = this.isInstructor ? 
       this.courseService.getInstructorCourses() : 
       this.courseService.getCourses();
 
     request$.subscribe({
-      next: (courses) => {
-        this.courses = courses;
-        this.originalCourses = [...courses];
+      next: () => {
         this.loading = false;
       },
       error: (err) => {
@@ -93,8 +98,8 @@ export class CoursesComponent implements OnInit {
       
       this.loading = true;
       this.courseService.createCourse(courseData).subscribe({
-        next: (course) => {
-          this.courses = [course, ...this.courses];
+        next: () => {
+          // Don't manually update arrays here, let the subscription handle it
           this.courseForm.reset();
           this.loading = false;
           this.showCreateForm = false;
@@ -154,8 +159,7 @@ export class CoursesComponent implements OnInit {
       this.loading = true;
       this.courseService.deleteCourse(courseId).subscribe({
         next: () => {
-          this.courses = this.courses.filter(course => course.id !== courseId);
-          this.originalCourses = this.originalCourses.filter(course => course.id !== courseId);
+          // Don't manually update arrays here, let the subscription handle it
           this.loading = false;
         },
         error: (err) => {

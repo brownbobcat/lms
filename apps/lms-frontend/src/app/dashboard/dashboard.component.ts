@@ -1,4 +1,4 @@
-import { Component, HostListener, inject, ViewChild } from '@angular/core';
+import { Component, HostListener, inject, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AsyncPipe } from '@angular/common';
 import { MatGridListModule } from '@angular/material/grid-list';
@@ -34,9 +34,14 @@ import { AuthService } from '../auth/auth.service';
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss',
 })
-export class DashboardComponent {
+export class DashboardComponent implements OnInit {
+  userName: string | undefined;
   private router = inject(Router);
   private readonly authService = inject(AuthService);
+
+  ngOnInit(): void {
+      this.userName = this.authService.user()?.fullName;
+  }
 
   @ViewChild(MobileMenuComponent) mobileMenu!: MobileMenuComponent;
   isSidebarOpen = true;

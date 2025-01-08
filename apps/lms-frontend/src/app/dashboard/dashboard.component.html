@@ -10,7 +10,7 @@
     <div class="navbar-right">
       <div class="user-profile" [matMenuTriggerFor]="profileMenu">
         <!-- <img src="assets/profile.jpg" alt="Profile"> -->
-        <span>John Doe</span>
+        <span>{{userName}}</span>
         <mat-icon>arrow_drop_down</mat-icon>
       </div>
     </div>
@@ -38,7 +38,7 @@
   <aside class="sidebar">
     <ul class="nav-links">
       <li>
-        <a routerLink="/dashboard" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+        <a routerLink="/dashboard/overview" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
           <i class="fas fa-home"></i>
           <span>Dashboard</span>
         </a>
