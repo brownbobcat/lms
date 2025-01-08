@@ -1,6 +1,5 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, computed, inject, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { SyllabusDocument } from '../../../../../../libs/types';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
@@ -11,8 +10,11 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import { documents } from '../../../../../../libs/constants';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpEventType } from '@angular/common/http';
+import { finalize } from 'rxjs';
+import { Syllabus } from '../../../../../../libs/types';
+import { environment } from '../../../../../../environments/environment';
+import { AuthService } from '../../../../auth/auth.service'
 @Component({
   selector: 'app-syllabus',
   standalone: true,
@@ -34,33 +36,140 @@ import { HttpClient } from '@angular/common/http';
   styleUrl: './syllabus.component.scss',
 })
 export class SyllabusComponent implements OnInit {
-  documents: SyllabusDocument[] = [];
+  isInstructor = computed(() => {
+    const user = this.authService.user();
+    return user?.role === 'instructor';
+  });
+  documents: Syllabus[] = [];
+  uploadProgress = 0;
+  uploadError = '';
+  isDragging = false;
+  private apiUrl = `${environment.apiUrl}`;
+  private snackBar = inject(MatSnackBar);
+  private http = inject(HttpClient);
+  private authService = inject(AuthService);
 
-  snackBar = inject(MatSnackBar);
-  http = inject(HttpClient);
-
-  selectedDocument: SyllabusDocument | null = null;
-  pdfSrc: string | null = null;
-
-  ngOnInit(): void {
-    this.documents = documents;
+  ngOnInit() {
+    this.loadDocuments();
   }
 
-  selectDocument(document: SyllabusDocument): void {
-    console.log('Selecting document:', document);
-    this.selectedDocument = document;
-    this.pdfSrc =
-      'https://vadimdez.github.io/ng2-pdf-viewer/assets/pdf-test.pdf';
+  formatFileSize(bytes: number): string {
+    if (bytes === 0) return '0 Bytes';
+    const k = 1024;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
   }
 
-  onError(error: any): void {
-    console.error('PDF Error:', error);
-    this.snackBar.open('Error loading PDF. Please try again.', 'Close', {
-      duration: 3000,
+  onDragOver(event: DragEvent) {
+    event.preventDefault();
+    this.isDragging = true;
+  }
+
+  onDragLeave(event: DragEvent) {
+    event.preventDefault();
+    this.isDragging = false;
+  }
+
+  onDrop(event: DragEvent) {
+    event.preventDefault();
+    this.isDragging = false;
+    const files = event.dataTransfer?.files;
+    if (files?.length) {
+      this.uploadDocument(files[0]);
+    }
+  }
+
+  onFileSelected(event: any) {
+    const file = event.target.files[0];
+    if (file) {
+      this.uploadDocument(file);
+    }
+  }
+
+  uploadDocument(file: File) {
+    if (!file.type.match(/(pdf|doc|docx)$/)) {
+      this.snackBar.open('Please upload PDF or Word documents only', 'Close', {
+        duration: 3000
+      });
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('file', file);
+
+    this.uploadError = '';
+    this.uploadProgress = 0;
+
+    this.http.post(`${this.apiUrl}/syllabus/upload`, formData, {
+      reportProgress: true,
+      observe: 'events'
+    }).pipe(
+      finalize(() => this.uploadProgress = 0)
+    ).subscribe({
+      next: (event) => {
+        if (event.type === HttpEventType.UploadProgress) {
+          this.uploadProgress = Math.round(100 * (event.loaded / (event.total || event.loaded)));
+        } else if (event.type === HttpEventType.Response) {
+          this.loadDocuments();
+          this.snackBar.open('Document uploaded successfully', 'Close', {
+            duration: 3000
+          });
+        }
+      },
+      error: (error) => {
+        this.uploadError = 'Upload failed. Please try again.';
+        this.snackBar.open('Upload failed', 'Close', {
+          duration: 3000
+        });
+      }
     });
   }
 
-  onDocumentLoad(pdf: any): void {
-    console.log('PDF loaded successfully:', pdf);
+  loadDocuments() {
+    this.http.get<Syllabus[]>(`${this.apiUrl}/syllabus`).subscribe({
+      next: (docs) => this.documents = docs,
+      error: (error) => {
+        this.snackBar.open('Error loading documents', 'Close', {
+          duration: 3000
+        });
+      }
+    });
+  }
+
+  downloadDocument(doc: Syllabus) {
+    this.http.get(`${this.apiUrl}/syllabus/${doc.id}/download`, {
+      responseType: 'blob'
+    }).subscribe({
+      next: (blob) => {
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = doc.name;
+        link.click();
+        window.URL.revokeObjectURL(url);
+      },
+      error: (error) => {
+        this.snackBar.open('Download failed', 'Close', {
+          duration: 3000
+        });
+      }
+    });
+  }
+
+  deleteDocument(doc: Syllabus) {
+    this.http.delete(`${this.apiUrl}/syllabus/${doc.id}`).subscribe({
+      next: () => {
+        this.loadDocuments();
+        this.snackBar.open('Document deleted successfully', 'Close', {
+          duration: 3000
+        });
+      },
+      error: (error) => {
+        this.snackBar.open('Delete failed', 'Close', {
+          duration: 3000
+        });
+      }
+    });
   }
 }

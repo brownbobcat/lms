@@ -58,13 +58,22 @@ export interface Announcement {
   };
 }
 
-export interface SyllabusDocument {
-  id: string;
-  title: string;
-  description: string;
-  dateUploaded: Date;
-  fileUrl: string;
+// export interface SyllabusDocument {
+//   id: string;
+//   title: string;
+//   description: string;
+//   dateUploaded: Date;
+//   fileUrl: string;
+// }
+export interface Syllabus {
+  id: number;
+  name: string;
+  type: string;
+  size: number;
+  path: string;
+  uploadedAt: Date;
 }
+
 
 export interface CourseMaterial {
   id: string;
