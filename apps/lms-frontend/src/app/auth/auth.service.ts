@@ -24,8 +24,8 @@ export class AuthService {
   }
 
   private initializeAuth(): void {
-    const token = localStorage.getItem('token');
-    const user = localStorage.getItem('user');
+    const token = sessionStorage.getItem('token');
+    const user = sessionStorage.getItem('user');
 
     if (token && user) {
       this.authToken.set(token);
@@ -45,16 +45,16 @@ export class AuthService {
   }
 
   logout(): void {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
+    sessionStorage.removeItem('token');
+    sessionStorage.removeItem('user');
     this.authToken.set(null);
     this.currentUser.set(null);
     this.router.navigate(['/login']);
   }
 
   private handleAuthSuccess(response: AuthResponse): void {
-    localStorage.setItem('token', response.access_token);
-    localStorage.setItem('user', JSON.stringify(response.user));
+    sessionStorage.setItem('token', response.access_token);
+    sessionStorage.setItem('user', JSON.stringify(response.user));
     this.authToken.set(response.access_token);
     this.currentUser.set(response.user);
   }

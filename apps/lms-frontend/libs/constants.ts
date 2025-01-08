@@ -1,4 +1,4 @@
-import { Course, SyllabusDocument } from './types';
+// import { Course, SyllabusDocument } from './types';
 
 // export const courses: Course[] = [
 //   {
@@ -15,19 +15,19 @@ import { Course, SyllabusDocument } from './types';
 //   }
 // ];
 
-export const documents: SyllabusDocument[] = [
-  {
-    id: '1',
-    title: 'Sample PDF 1',
-    description: 'Test PDF from ng2-pdf-viewer',
-    dateUploaded: new Date(),
-    fileUrl: './src/assets/documents/cv.pdf',
-  },
-  {
-    id: '2',
-    title: 'Mozilla PDF Sample',
-    description: 'Sample PDF from Mozilla',
-    dateUploaded: new Date(),
-    fileUrl: 'https://pdf.js/web/compressed.tracemonkey-pldi-09.pdf',
-  },
-];
+// export const documents: SyllabusDocument[] = [
+//   {
+//     id: '1',
+//     title: 'Sample PDF 1',
+//     description: 'Test PDF from ng2-pdf-viewer',
+//     dateUploaded: new Date(),
+//     fileUrl: './src/assets/documents/cv.pdf',
+//   },
+//   {
+//     id: '2',
+//     title: 'Mozilla PDF Sample',
+//     description: 'Sample PDF from Mozilla',
+//     dateUploaded: new Date(),
+//     fileUrl: 'https://pdf.js/web/compressed.tracemonkey-pldi-09.pdf',
+//   },
+// ];
