@@ -1,0 +1,87 @@
+/* dashboard.component.scss */
+.dashboard-container {
+    margin: 20px;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  
+  .search-container {
+    padding: 16px;
+    background-color: #fff;
+  
+    mat-form-field {
+      width: 100%;
+      max-width: 500px;
+    }
+  }
+  
+  .table-container {
+    position: relative;
+    min-height: 200px;
+    overflow: auto;
+  }
+  
+  table {
+    width: 100%;
+  }
+  
+  .mat-column-actions {
+    width: 80px;
+    text-align: center;
+  }
+  
+  .status-badge {
+    padding: 4px 8px;
+    border-radius: 16px;
+    font-size: 12px;
+    font-weight: 500;
+    text-transform: capitalize;
+  
+    &.active {
+      background-color: #e8f5e9;
+      color: #2e7d32;
+    }
+  
+    &.pending {
+      background-color: #fff3e0;
+      color: #ef6c00;
+    }
+  
+    &.completed {
+      background-color: #e3f2fd;
+      color: #1565c0;
+    }
+  }
+  
+  // Responsive adjustments
+  @media (max-width: 768px) {
+    .mat-column-instructor,
+    .mat-column-enrolledStudents,
+    .mat-column-startDate {
+      display: none;
+    }
+  
+    .dashboard-container {
+      margin: 10px;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .mat-column-semester {
+      display: none;
+    }
+  }
+  
+  // Loading state
+  .loading-shade {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 56px;
+    right: 0;
+    background: rgba(0, 0, 0, 0.15);
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
