@@ -11,6 +11,9 @@ import {
   Validators,
   ReactiveFormsModule,
 } from '@angular/forms';
+import { AuthService } from '../auth.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { finalize } from 'rxjs';
 
 @Component({
   selector: 'app-forgot-password',
@@ -34,37 +37,53 @@ export class ForgotPasswordComponent {
   emailSent = false;
   submittedEmail = '';
 
-  constructor(private fb: FormBuilder) {
+  constructor(
+    private fb: FormBuilder,
+    private authService: AuthService,
+    private snackBar: MatSnackBar
+  ) {
     this.forgotPasswordForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
     });
   }
 
-  async submit() {
+  submit() {
     if (this.forgotPasswordForm.valid) {
+      const email = this.forgotPasswordForm.get('email')?.value;
+      if (!email) return;
+
       this.loading = true;
-      try {
-        // Add your password reset logic here
-        this.submittedEmail = this.forgotPasswordForm.get('email')?.value;
-        await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulated API call
-        this.emailSent = true;
-      } catch (error) {
-        console.error('Password reset error:', error);
-      } finally {
-        this.loading = false;
-      }
+      this.authService
+        .forgotPassword(email)
+        .pipe(finalize(() => (this.loading = false)))
+        .subscribe({
+          next: () => {
+            this.emailSent = true;
+            this.submittedEmail = email;
+          },
+          error: (error: string) => {
+            this.snackBar.open(error, 'Close', { duration: 5000 });
+          },
+        });
     }
   }
 
-  async resendEmail() {
-    this.resendLoading = true;
-    try {
-      // Add your resend email logic here
-      await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulated API call
-    } catch (error) {
-      console.error('Resend email error:', error);
-    } finally {
-      this.resendLoading = false;
-    }
+  resendEmail() {
+    if (!this.submittedEmail) return;
+
+    this.loading = true;
+    this.authService
+      .forgotPassword(this.submittedEmail)
+      .pipe(finalize(() => (this.loading = false)))
+      .subscribe({
+        next: () => {
+          this.snackBar.open('Reset link has been resent', 'Close', {
+            duration: 5000,
+          });
+        },
+        error: (error: string) => {
+          this.snackBar.open(error, 'Close', { duration: 5000 });
+        },
+      });
   }
 }

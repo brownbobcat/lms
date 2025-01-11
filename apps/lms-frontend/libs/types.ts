@@ -66,14 +66,6 @@ export interface Announcement {
     avatar?: string;
   };
 }
-
-// export interface SyllabusDocument {
-//   id: string;
-//   title: string;
-//   description: string;
-//   dateUploaded: Date;
-//   fileUrl: string;
-// }
 export interface Syllabus {
   id: number;
   name: string;
@@ -129,4 +121,17 @@ export enum UserRole {
   STUDENT = 'student',
   INSTRUCTOR = 'instructor',
   ADMIN = 'admin'
+}
+
+export interface PasswordResponse {
+  message: string;
+}
+
+export interface ForgotPasswordRequest {
+  email: string;
+}
+
+export interface ResetPasswordRequest {
+  token: string;
+  newPassword: string;
 }

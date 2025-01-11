@@ -3,22 +3,30 @@ import {
   Injectable,
   InternalServerErrorException,
   UnauthorizedException,
+  Logger,
+  NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../users/users.entity';
-import { Repository } from 'typeorm';
+import { MoreThan, Repository } from 'typeorm';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { UserResponse } from '../users/users.types';
 import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
+import { MailService } from '../mail/mail.service';
+import * as crypto from 'crypto';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class AuthService {
+  private readonly logger = new Logger(AuthService.name);
   constructor(
     @InjectRepository(User)
     private usersRepository: Repository<User>,
-    private jwtService: JwtService
+    private jwtService: JwtService,
+    private mailService: MailService,
+    private configService: ConfigService
   ) {}
 
   async validateUser(email: string, password: string): Promise<UserResponse> {
@@ -101,6 +109,56 @@ export class AuthService {
       };
     } catch (error) {
       throw new InternalServerErrorException('Error creating user');
+    }
+  }
+
+  async forgotPassword(email: string): Promise<void> {
+    try {
+      const user = await this.usersRepository.findOne({ where: { email } });
+      
+      if (!user) {
+        return;
+      }
+
+      const resetToken = crypto.randomBytes(32).toString('hex');
+
+      await this.usersRepository.update(user.id, {
+        resetPasswordToken: resetToken, 
+        resetPasswordExpires: new Date(Date.now() + 3600000),
+      });
+
+      const resetUrl = `${this.configService.get('FRONTEND_URL')}/reset-password?token=${resetToken}`;
+      await this.mailService.sendPasswordResetEmail(user.email, resetUrl);
+    } catch (error) {
+      throw new Error('Error processing password reset');
+    }
+  }
+
+  async resetPassword(token: string, newPassword: string): Promise<void> {
+
+    try {
+      const user = await this.usersRepository.findOne({
+        where: {
+          resetPasswordToken: token,
+          resetPasswordExpires: MoreThan(new Date())
+        }
+      });
+
+      if (!user) {
+        throw new UnauthorizedException('Invalid or expired reset token');
+      }
+
+      const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+      // Update user's password and clear reset token fields
+      await this.usersRepository.update(user.id, {
+        password: hashedPassword,
+        resetPasswordToken: null,
+        resetPasswordExpires: null
+      });
+
+    } catch (error) {
+      throw new UnauthorizedException('Error resetting password');
     }
   }
 }
