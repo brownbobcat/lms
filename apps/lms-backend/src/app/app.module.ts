@@ -9,6 +9,7 @@ import { CourseModule } from '../courses/course.module';
 import { UsersModule } from '../users/users.module';
 import { AnnouncementsModule } from '../announcements/announcements.module';
 import { SyllabusModule } from '../syllabus/syllabus.module';
+import { MailModule } from '../mail/mail.module';
 
 @Module({
   imports: [
@@ -35,7 +36,8 @@ import { SyllabusModule } from '../syllabus/syllabus.module';
     CourseModule,
     UsersModule,
     AnnouncementsModule,
-    SyllabusModule
+    SyllabusModule,
+    MailModule
   ],
   controllers: [AppController],
   providers: [AppService],

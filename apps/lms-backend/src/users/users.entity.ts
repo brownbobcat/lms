@@ -38,4 +38,10 @@ export class User {
 
   @OneToMany(() => Course, (course) => course.instructor)
   coursesCreated: Course[];
+
+  @Column({ nullable: true })
+  resetPasswordToken: string;
+
+  @Column({ nullable: true })
+  resetPasswordExpires: Date;
 }

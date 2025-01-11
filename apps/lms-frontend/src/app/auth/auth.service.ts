@@ -5,6 +5,7 @@ import { catchError, tap } from 'rxjs/operators';
 import {
   AuthResponse,
   LoginCredentials,
+  PasswordResponse,
   RegisterCredentials,
   User,
 } from '../../../libs/types';
@@ -100,5 +101,23 @@ export class AuthService {
 
   getAuthToken(): string | null {
     return this.authToken();
+  }
+
+  forgotPassword(email: string): Observable<PasswordResponse> {
+    return this.http
+      .post<PasswordResponse>(`${this.API_URL}/auth/forgot-password`, { email })
+      .pipe(catchError(this.handleError));
+  }
+
+  resetPassword(
+    token: string,
+    newPassword: string
+  ): Observable<PasswordResponse> {
+    return this.http
+      .post<PasswordResponse>(`${this.API_URL}/auth/reset-password`, {
+        token,
+        newPassword,
+      })
+      .pipe(catchError(this.handleError));
   }
 }
