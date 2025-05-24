@@ -12,14 +12,11 @@ import * as express from 'express';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.enableCors({
-    origin:
-      process.env.NODE_ENV === 'production'
-        ? ['https://lms-five-navy.vercel.app/']
-        : ['http://localhost:4200'],
-    // origin: [
-    //   'http://localhost:4200', // Always allow local development
-    //   'https://lms-five-navy.vercel.app/', // Always allow your Vercel app
-    // ],
+    origin: [
+      'http://localhost:4200',
+      'https://lms-five-navy.vercel.app', // Your new Vercel URL
+      // 'https://lms-tawny-seven.vercel.app',  // Your old Vercel URL
+    ],
     credentials: true,
   });
   app.use('/uploads', express.static(join(__dirname, '..', 'uploads')));
