@@ -8,21 +8,38 @@ console.log('Building NestJS backend directly...');
 const distPath = path.join(__dirname, 'dist/apps/lms-backend');
 fs.mkdirSync(distPath, { recursive: true });
 
-// Run TypeScript compiler directly
+// Run TypeScript compiler with proper rootDir
 try {
   console.log('Compiling TypeScript...');
-  execSync(
-    'npx tsc -p apps/lms-backend/tsconfig.app.json --outDir dist/apps/lms-backend',
-    {
-      stdio: 'inherit',
-    }
+
+  // Create a temporary tsconfig that sets the rootDir correctly
+  const tempTsConfig = {
+    extends: './apps/lms-backend/tsconfig.app.json',
+    compilerOptions: {
+      outDir: './dist/apps/lms-backend',
+      rootDir: './apps/lms-backend/src',
+    },
+    include: ['apps/lms-backend/src/**/*'],
+    exclude: ['node_modules', 'dist', 'test', '**/*spec.ts'],
+  };
+
+  fs.writeFileSync(
+    'tsconfig.build.temp.json',
+    JSON.stringify(tempTsConfig, null, 2)
   );
+
+  execSync('npx tsc -p tsconfig.build.temp.json', {
+    stdio: 'inherit',
+  });
+
+  // Clean up temp file
+  fs.unlinkSync('tsconfig.build.temp.json');
 
   // Copy assets if they exist
   const assetsPath = path.join(__dirname, 'apps/lms-backend/src/assets');
   if (fs.existsSync(assetsPath)) {
     console.log('Copying assets...');
-    execSync(`cp -r ${assetsPath} ${distPath}/`, { stdio: 'inherit' });
+    execSync(`cp -r ${assetsPath} ${distPath}/assets`, { stdio: 'inherit' });
   }
 
   // Create a minimal package.json for the dist folder
@@ -77,10 +94,17 @@ try {
     console.log('\n✓ main.js found at:', mainPath);
   } else {
     console.log('\n✗ main.js NOT found at expected location');
-    console.log('Looking for main.js in src subdirectory...');
-    const srcMainPath = path.join(distPath, 'src/main.js');
-    if (fs.existsSync(srcMainPath)) {
-      console.log('✓ Found main.js at:', srcMainPath);
+
+    // Find where main.js actually is
+    try {
+      const findResult = execSync(`find ${distPath} -name "main.js"`, {
+        encoding: 'utf8',
+      });
+      if (findResult) {
+        console.log('Found main.js at:', findResult.trim());
+      }
+    } catch (e) {
+      /* empty */
     }
   }
 } catch (error) {
