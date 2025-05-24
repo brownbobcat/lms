@@ -14,26 +14,32 @@
       <form (ngSubmit)="submit()" [formGroup]="signupForm">
         <mat-form-field appearance="outline">
           <mat-label>Full Name</mat-label>
-          <input formControlName="fullName" id="fullName" matInput type="text" />
+          <input
+            formControlName="fullName"
+            id="fullName"
+            matInput
+            type="text"
+          />
         </mat-form-field>
-        @if (signupForm.get('fullName')?.invalid && signupForm.get('fullName')?.touched) {
-          @if (signupForm.get('fullName')?.errors?.['required']) {
-            <mat-error class="signup__error">Full name is required</mat-error>
-          }
-        }
+        @if (signupForm.get('fullName')?.invalid &&
+        signupForm.get('fullName')?.touched) { @if
+        (signupForm.get('fullName')?.errors?.['required']) {
+        <mat-error class="signup__error">Full name is required</mat-error>
+        } }
 
         <mat-form-field appearance="outline">
           <mat-label>Email</mat-label>
           <input formControlName="email" id="email" matInput type="email" />
         </mat-form-field>
-        @if (signupForm.get('email')?.invalid && signupForm.get('email')?.touched) {
-          @if (signupForm.get('email')?.errors?.['required']) {
-            <mat-error class="signup__error">Email is required</mat-error>
-          }
-          @if (signupForm.get('email')?.errors?.['email']) {
-            <mat-error class="signup__error">Please enter a valid email address</mat-error>
-          }
-        }
+        @if (signupForm.get('email')?.invalid &&
+        signupForm.get('email')?.touched) { @if
+        (signupForm.get('email')?.errors?.['required']) {
+        <mat-error class="signup__error">Email is required</mat-error>
+        } @if (signupForm.get('email')?.errors?.['email']) {
+        <mat-error class="signup__error"
+          >Please enter a valid email address</mat-error
+        >
+        } }
 
         <div formGroupName="passwords" class="passwords">
           <mat-form-field appearance="outline">
@@ -48,20 +54,20 @@
               {{ togglePassword ? 'visibility_off' : 'visibility' }}
             </mat-icon>
           </mat-form-field>
-          @if (passwordsGroup?.get('password')?.invalid && passwordsGroup?.get('password')?.touched) {
-            @if (passwordsGroup?.get('password')?.errors?.['required']) {
-              <mat-error class="signup__error">Password is required</mat-error>
-            }
-            @if (passwordsGroup?.get('password')?.errors?.['minlength']) {
-              <mat-error class="signup__error">Password should be at least 8 characters</mat-error>
-            }
-            @if (passwordsGroup?.get('password')?.errors?.['weakPassword']) {
-              <mat-error class="signup__error">
-                Password must contain at least one uppercase letter, one lowercase letter, 
-                one number, and one special character
-              </mat-error>
-            }
-          }
+          @if (passwordsGroup.get('password')?.invalid &&
+          passwordsGroup.get('password')?.touched) { @if
+          (passwordsGroup.get('password')?.errors?.['required']) {
+          <mat-error class="signup__error">Password is required</mat-error>
+          } @if (passwordsGroup.get('password')?.errors?.['minlength']) {
+          <mat-error class="signup__error"
+            >Password should be at least 8 characters</mat-error
+          >
+          } @if (passwordsGroup.get('password')?.errors?.['weakPassword']) {
+          <mat-error class="signup__error">
+            Password must contain at least one uppercase letter, one lowercase
+            letter, one number, and one special character
+          </mat-error>
+          } }
 
           <mat-form-field appearance="outline">
             <mat-label>Confirm Password</mat-label>
@@ -71,17 +77,22 @@
               id="confirmPassword"
               matInput
             />
-            <mat-icon (click)="toggleConfirmPassword = !toggleConfirmPassword" matSuffix>
+            <mat-icon
+              (click)="toggleConfirmPassword = !toggleConfirmPassword"
+              matSuffix
+            >
               {{ toggleConfirmPassword ? 'visibility_off' : 'visibility' }}
             </mat-icon>
           </mat-form-field>
-          @if (passwordsGroup?.get('confirmPassword')?.invalid && passwordsGroup?.get('confirmPassword')?.touched) {
-            @if (passwordsGroup?.get('confirmPassword')?.errors?.['required']) {
-              <mat-error class="signup__error">Please confirm your password</mat-error>
-            }
-          }
-          @if (passwordsGroup?.errors?.['passwordMismatch'] && passwordsGroup?.get('confirmPassword')?.touched) {
-            <mat-error class="signup__error">Passwords do not match</mat-error>
+          @if (passwordsGroup.get('confirmPassword')?.invalid &&
+          passwordsGroup.get('confirmPassword')?.touched) { @if
+          (passwordsGroup.get('confirmPassword')?.errors?.['required']) {
+          <mat-error class="signup__error"
+            >Please confirm your password</mat-error
+          >
+          } } @if (passwordsGroup.errors?.['passwordMismatch'] &&
+          passwordsGroup.get('confirmPassword')?.touched) {
+          <mat-error class="signup__error">Passwords do not match</mat-error>
           }
         </div>
 
@@ -90,14 +101,15 @@
             [disabled]="loading || signupForm.invalid"
             class="submit__btn"
             mat-flat-button
-            type="submit">
+            type="submit"
+          >
             @if (loading) {
-              <span class="loading">Loading...</span>
+            <span class="loading">Loading...</span>
             } @else {
-              <span>Create Account</span>
+            <span>Create Account</span>
             }
           </button>
-          
+
           <div class="action-links">
             <a routerLink="/login">Already have an account?</a>
             <a routerLink="/terms">Terms & Privacy</a>
