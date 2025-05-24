@@ -64,6 +64,25 @@ try {
 
   console.log('Build completed successfully!');
   console.log(`Output directory: ${distPath}`);
+
+  // List all files in the dist directory
+  console.log('\nFiles in dist directory:');
+  execSync(`find ${distPath} -type f -name "*.js" | head -20`, {
+    stdio: 'inherit',
+  });
+
+  // Check if main.js exists
+  const mainPath = path.join(distPath, 'main.js');
+  if (fs.existsSync(mainPath)) {
+    console.log('\n✓ main.js found at:', mainPath);
+  } else {
+    console.log('\n✗ main.js NOT found at expected location');
+    console.log('Looking for main.js in src subdirectory...');
+    const srcMainPath = path.join(distPath, 'src/main.js');
+    if (fs.existsSync(srcMainPath)) {
+      console.log('✓ Found main.js at:', srcMainPath);
+    }
+  }
 } catch (error) {
   console.error('Build failed:', error);
   process.exit(1);
