@@ -2,7 +2,12 @@
   "name": "@lms/source",
   "version": "0.0.0",
   "license": "MIT",
-  "scripts": {},
+  "scripts": {
+    "dev:backend": "nx serve lms-backend",
+    "dev:frontend": "nx serve lms-frontend",
+    "build:backend": "NODE_OPTIONS='--max-old-space-size=450' NX_DAEMON=false nx build lms-backend --skip-nx-cache",
+    "build:frontend": "NODE_OPTIONS='--max-old-space-size=450' NX_DAEMON=false nx build lms-frontend --skip-nx-cache"
+  },
   "private": true,
   "dependencies": {
     "@angular/common": "~18.2.0",
@@ -57,7 +62,7 @@
     "@nx/eslint": "20.1.1",
     "@nx/eslint-plugin": "20.1.1",
     "@nx/jest": "20.1.1",
-    "@nx/js": "20.1.1",
+    "@nx/js": "^20.1.1",
     "@nx/nest": "^20.1.1",
     "@nx/node": "20.1.1",
     "@nx/web": "20.1.1",
