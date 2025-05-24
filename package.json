@@ -25,6 +25,7 @@
     "@nestjs/platform-express": "^10.4.15",
     "@nestjs/typeorm": "^10.0.2",
     "@nrwl/angular": "^19.8.4",
+    "@nx/esbuild": "^21.1.2",
     "axios": "^1.6.0",
     "bcrypt": "^5.1.1",
     "class-transformer": "^0.5.1",
